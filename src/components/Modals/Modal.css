@@ -1,0 +1,6 @@
+#modal-root {
+    position: relative ;
+    z-index: 999 ;
+    /* background-color: rgba(255, 255, 255, 0.3);
+    background-size: cover; */
+}
