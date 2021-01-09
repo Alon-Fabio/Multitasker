@@ -14,7 +14,7 @@ const Profile = (props) => {
       case "PET_CHANGE":
         return { ...state, pet: action.payload };
       default:
-        return;
+        return new Error("FormReducer type is not valid");
     }
   };
 
