@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect } from "react";
+import PropTypes from "prop-types";
 
 const Register = ({ fetchProfile }) => {
   useEffect(() => {
@@ -125,6 +126,10 @@ const Register = ({ fetchProfile }) => {
       </main>
     </article>
   );
+};
+
+Register.propTypes = {
+  fetchProfile: PropTypes.func,
 };
 
 export default Register;

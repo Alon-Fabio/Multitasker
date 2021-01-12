@@ -1,8 +1,8 @@
 import React, { useReducer } from "react";
+import PropTypes from "prop-types";
 import "./Profile.css";
 
-const Profile = (props) => {
-  const { user, toggleModal, loadUser } = props;
+const Profile = ({ user, toggleModal, loadUser }) => {
   const { id, name, age, pet } = user;
 
   const formReducer = (state, action) => {
@@ -132,6 +132,20 @@ const Profile = (props) => {
       </article>
     </div>
   );
+};
+
+Profile.propTypes = {
+  toggleModal: PropTypes.func,
+  loadUser: PropTypes.func,
+  user: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    email: PropTypes.string,
+    entries: PropTypes.string,
+    joined: PropTypes.string,
+    age: PropTypes.string,
+    pet: PropTypes.string,
+  }),
 };
 
 export default Profile;
