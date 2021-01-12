@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 const Rank = ({ entries, name }) => {
   const [emoji, setEmoji] = useState("");
@@ -36,4 +37,10 @@ const Rank = ({ entries, name }) => {
     </div>
   );
 };
+
+Rank.propTypes = {
+  entries: PropTypes.string,
+  name: PropTypes.string,
+};
+
 export default Rank;

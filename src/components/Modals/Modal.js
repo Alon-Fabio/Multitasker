@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import "./Modal.css";
 
 const modalRoot = document.getElementById("modal-root");
 
-const Modal = (props) => {
+const Modal = ({ children }) => {
   const [el, setEl] = useState(document.createElement("div"));
   useEffect(() => {
     modalRoot.appendChild(el);
@@ -13,6 +14,15 @@ const Modal = (props) => {
     };
   }, [el]);
 
-  return ReactDOM.createPortal(props.children, el);
+  return ReactDOM.createPortal(children, el);
+};
+
+Modal.propTypes = {
+  children: PropTypes.shape({
+    $$typeof: PropTypes.symbol,
+    key: PropTypes.number,
+    props: PropTypes.object,
+    type: PropTypes.func,
+  }),
 };
 export default Modal;

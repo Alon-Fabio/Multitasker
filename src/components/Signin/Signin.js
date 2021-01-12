@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import PropTypes from "prop-types";
 
 const Signin = ({ fetchProfile, onRouteChange }) => {
   const signInReducer = (signInState, { type, payload }) => {
@@ -104,6 +105,11 @@ const Signin = ({ fetchProfile, onRouteChange }) => {
       </main>
     </article>
   );
+};
+
+Signin.propTypes = {
+  fetchProfile: PropTypes.func,
+  onRouteChange: PropTypes.func,
 };
 
 export default Signin;

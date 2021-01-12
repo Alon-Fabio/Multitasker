@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import ProfileIcon from "../Profile/ProfileIcon";
 
 const Navigation = ({ onRouteChange, isSignedIn, toggleModal }) => {
@@ -28,4 +29,9 @@ const Navigation = ({ onRouteChange, isSignedIn, toggleModal }) => {
   }
 };
 
+Navigation.propTypes = {
+  onRouteChange: PropTypes.func,
+  isSignedIn: PropTypes.bool,
+  toggleModal: PropTypes.func,
+};
 export default Navigation;

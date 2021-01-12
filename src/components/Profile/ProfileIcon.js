@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Dropdown,
   DropdownMenu,
@@ -41,6 +42,11 @@ const ProfileIcon = ({ onRouteChange, toggleModal }) => {
       </Dropdown>
     </div>
   );
+};
+
+ProfileIcon.propTypes = {
+  onRouteChange: PropTypes.func,
+  toggleModal: PropTypes.func,
 };
 
 export default ProfileIcon;
