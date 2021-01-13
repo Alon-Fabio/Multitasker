@@ -135,8 +135,8 @@ const Profile = ({ user, toggleModal, loadUser }) => {
 };
 
 Profile.propTypes = {
-  toggleModal: PropTypes.func,
-  loadUser: PropTypes.func,
+  toggleModal: PropTypes.func.isRequired,
+  loadUser: PropTypes.func.isRequired,
   user: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,

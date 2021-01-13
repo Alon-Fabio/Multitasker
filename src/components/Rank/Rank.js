@@ -43,4 +43,9 @@ Rank.propTypes = {
   name: PropTypes.string,
 };
 
+Rank.defaultProps = {
+  name: "Ops.. we didn't get your name. But",
+  entries: "0",
+};
+
 export default Rank;

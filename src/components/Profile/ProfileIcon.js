@@ -45,8 +45,8 @@ const ProfileIcon = ({ onRouteChange, toggleModal }) => {
 };
 
 ProfileIcon.propTypes = {
-  onRouteChange: PropTypes.func,
-  toggleModal: PropTypes.func,
+  onRouteChange: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 export default ProfileIcon;

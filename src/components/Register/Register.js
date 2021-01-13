@@ -129,7 +129,7 @@ const Register = ({ fetchProfile }) => {
 };
 
 Register.propTypes = {
-  fetchProfile: PropTypes.func,
+  fetchProfile: PropTypes.func.isRequired,
 };
 
 export default Register;
