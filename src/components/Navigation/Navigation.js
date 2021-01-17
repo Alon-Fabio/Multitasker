@@ -30,8 +30,12 @@ const Navigation = ({ onRouteChange, isSignedIn, toggleModal }) => {
 };
 
 Navigation.propTypes = {
-  onRouteChange: PropTypes.func,
+  onRouteChange: PropTypes.func.isRequired,
   isSignedIn: PropTypes.bool,
-  toggleModal: PropTypes.func,
+  toggleModal: PropTypes.func.isRequired,
+};
+
+Navigation.defaultProps = {
+  isSignedIn: false,
 };
 export default Navigation;

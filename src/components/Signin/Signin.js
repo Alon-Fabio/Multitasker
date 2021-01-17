@@ -108,8 +108,8 @@ const Signin = ({ fetchProfile, onRouteChange }) => {
 };
 
 Signin.propTypes = {
-  fetchProfile: PropTypes.func,
-  onRouteChange: PropTypes.func,
+  fetchProfile: PropTypes.func.isRequired,
+  onRouteChange: PropTypes.func.isRequired,
 };
 
 export default Signin;

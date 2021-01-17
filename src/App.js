@@ -151,41 +151,49 @@ const App = () => {
   };
 
   const onButtonSubmit = () => {
-    setImageUrl(() => input);
-    fetch("http://localhost:3000/imageurl", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Authentication: window.sessionStorage.getItem("SmartBrainToken"),
-      },
-      body: JSON.stringify({
-        input: input,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        if (response) {
-          fetch("http://localhost:3000/image", {
-            method: "put",
-            headers: {
-              "Content-Type": "application/json",
-              Authentication: window.sessionStorage.getItem("SmartBrainToken"),
-            },
-            body: JSON.stringify({
-              id: user.id,
-            }),
-          })
-            .then((response) => response.json())
-            .then((count) => {
-              setUser((prevState) => {
-                return { ...prevState, entries: count };
-              });
-            })
-            .catch(console.log);
-        }
-        displayFaceBox(calculateFaceLocation(response));
+    if (input !== "") {
+      setImageUrl(() => input);
+      fetch("http://localhost:3000/imageurl", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Authentication: window.sessionStorage.getItem("SmartBrainToken"),
+        },
+        body: JSON.stringify({
+          input: input,
+        }),
       })
-      .catch((err) => console.log(err));
+        .then((response) => response.json())
+        .then((response) => {
+          if (response) {
+            fetch("http://localhost:3000/image", {
+              method: "put",
+              headers: {
+                "Content-Type": "application/json",
+                Authentication: window.sessionStorage.getItem(
+                  "SmartBrainToken"
+                ),
+              },
+              body: JSON.stringify({
+                id: user.id,
+              }),
+            })
+              .then((response) => response.json())
+              .then((count) => {
+                setUser((prevState) => {
+                  return { ...prevState, entries: count };
+                });
+              })
+              .catch(console.log);
+          }
+          displayFaceBox(calculateFaceLocation(response));
+        })
+        .catch((err) => console.log(err));
+    } else {
+      setImageUrl(
+        "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+      );
+    }
   };
 
   const onRouteChange = (route) => {
