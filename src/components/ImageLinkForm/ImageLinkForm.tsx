@@ -2,7 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./ImageLinkForm.css";
 
-const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
+interface IImageLinkFormProps {
+  onInputChange(event: React.ChangeEvent<HTMLInputElement>): void;
+  onButtonSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+}
+
+const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
+  onInputChange,
+  onButtonSubmit,
+}) => {
   return (
     <div>
       <p className="f3">
@@ -28,8 +36,8 @@ const ImageLinkForm = ({ onInputChange, onButtonSubmit }) => {
 };
 
 ImageLinkForm.propTypes = {
-  onButtonSubmit: PropTypes.func,
-  onInputChange: PropTypes.func,
+  onButtonSubmit: PropTypes.func.isRequired,
+  onInputChange: PropTypes.func.isRequired,
 };
 
 export default ImageLinkForm;
