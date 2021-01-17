@@ -3,14 +3,18 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import "./Modal.css";
 
-const modalRoot = document.getElementById("modal-root");
+const modalRoot: HTMLElement | null = document.getElementById("modal-root");
 
-const Modal = ({ children }) => {
+const Modal: React.FC<React.ReactNode> = ({ children }) => {
   const [el, setEl] = useState(document.createElement("div"));
   useEffect(() => {
-    modalRoot.appendChild(el);
+    if (modalRoot) {
+      modalRoot.appendChild(el);
+    }
     return () => {
-      modalRoot.removeChild(el);
+      if (modalRoot) {
+        modalRoot.removeChild(el);
+      }
     };
   }, [el]);
 

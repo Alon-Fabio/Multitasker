@@ -190,6 +190,7 @@ const App = () => {
         })
         .catch((err) => console.log(err));
     } else {
+      displayFaceBox([]);
       setImageUrl(
         "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
       );
