@@ -1,10 +1,9 @@
 import React from "react";
 import brain from "./brain.png";
+import Tilt from "react-tilt";
 import "./Logo.css";
 
 /// <reference path="./types.d.ts"/>
-
-import Tilt from "react-tilt";
 
 const Logo: React.FC = () => {
   return (

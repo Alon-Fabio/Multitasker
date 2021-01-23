@@ -2,38 +2,68 @@ import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 import "./Profile.css";
 
-const Profile = ({ user, toggleModal, loadUser }) => {
+interface IProfileProps {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    entries: string;
+    joined: string;
+    age: string;
+    pet: string;
+  };
+  toggleModal(): void;
+  loadUser(user: {}): {} | null;
+}
+
+interface IProState {
+  name?: string;
+  age?: string;
+  pet?: string;
+}
+
+interface IProAction {
+  type: "NAME_CHANGE" | "AGE_CHANGE" | "PET_CHANGE";
+  payload: string;
+}
+
+const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
   const { id, name, age, pet } = user;
 
-  const formReducer = (state, action) => {
+  const formReducer: React.Reducer<IProState, IProAction> = (
+    ProState,
+    action
+  ) => {
     switch (action.type) {
       case "NAME_CHANGE":
-        return { ...state, name: action.payload };
+        return { ...ProState, name: action.payload };
       case "AGE_CHANGE":
-        return { ...state, age: action.payload };
+        return { ...ProState, age: action.payload };
       case "PET_CHANGE":
-        return { ...state, pet: action.payload };
+        return { ...ProState, pet: action.payload };
       default:
         return new Error("FormReducer type is not valid");
     }
   };
 
-  const [state, dispatch] = useReducer(formReducer, {
+  const [ProState, dispatch] = useReducer(formReducer, {
     name: name,
     age: age,
     pet: pet,
   });
 
-  const onProfileSave = (data) => {
+  const onProfileSave = (data: IProState) => {
+    const onProfileSaveHeaders: HeadersInit = new Headers();
+    onProfileSaveHeaders.set("Content-Type", "application/json");
+    const tokenFetch =
+      window.sessionStorage.getItem("SmartBrainToken") || "no token";
+    onProfileSaveHeaders.append("Authentication", tokenFetch);
     fetch(`http://localhost:3000/profile/${id}`, {
       method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Authentication: window.sessionStorage.getItem("SmartBrainToken"),
-      },
+      headers: onProfileSaveHeaders,
       body: JSON.stringify({ formInput: data }),
     })
-      .then((response) => {
+      .then((response: Response) => {
         if (response.status === 200 || response.status === 304) {
           toggleModal();
           loadUser({ ...user, ...data });
@@ -54,7 +84,7 @@ const Profile = ({ user, toggleModal, loadUser }) => {
             className="dib h3 w3"
             alt="avatar"
           />
-          <h1>{state.name || name}</h1>
+          <h1>{ProState.name || name}</h1>
           <h4>{`Image submitted: ${user.entries}`}</h4>
           <p>{`Member since: ${new Date(user.joined).toLocaleDateString()}`}</p>
           <hr />
@@ -113,7 +143,7 @@ const Profile = ({ user, toggleModal, loadUser }) => {
             style={{ display: "flex", justifyContent: "space-around" }}
           >
             <button
-              onClick={() => onProfileSave(state)}
+              onClick={() => onProfileSave(ProState)}
               className="b pa2 grow pointer hover-white w-40 bg-light-red b--black-20"
             >
               Save
@@ -138,14 +168,14 @@ Profile.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   loadUser: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-    email: PropTypes.string,
-    entries: PropTypes.string,
-    joined: PropTypes.string,
-    age: PropTypes.string,
-    pet: PropTypes.string,
-  }),
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    entries: PropTypes.string.isRequired,
+    joined: PropTypes.string.isRequired,
+    age: PropTypes.string.isRequired,
+    pet: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default Profile;
