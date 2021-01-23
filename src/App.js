@@ -26,7 +26,7 @@ const particlesOptions = {
 
 const App = () => {
   const [user, setUser] = useState({
-    id: "",
+    id: null,
     name: "",
     email: "",
     entries: 0,
@@ -46,7 +46,7 @@ const App = () => {
     setUser((prevState) => {
       return {
         ...prevState,
-        id: "",
+        id: null,
         name: "",
         email: "",
         entries: 0,
@@ -200,7 +200,7 @@ const App = () => {
   const onRouteChange = (route) => {
     if (route === "signout") {
       window.sessionStorage.removeItem("SmartBrainToken");
-      return initialState();
+      initialState();
     } else if (route === "home") {
       setIsSignedIn(() => true);
     }
