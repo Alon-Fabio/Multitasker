@@ -1,8 +1,25 @@
 import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 
-const Signin = ({ fetchProfile, onRouteChange }) => {
-  const signInReducer = (signInState, { type, payload }) => {
+interface ISigProps {
+  fetchProfile(token: string, id: number | null): void;
+  onRouteChange(route: string): void;
+}
+
+interface ISgnRedState {
+  email: string;
+  password: string;
+}
+interface ISigRedAction {
+  type: "CHANGE_PASS" | "CHANGE_EMAIL";
+  payload: string;
+}
+
+const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
+  const signInReducer = (
+    signInState: ISgnRedState,
+    { type, payload }: ISigRedAction
+  ): ISgnRedState => {
     // signInState === {signInEmail: string,signInPassword:string}
     // action === {type: "CHANGE_EMAIL" || "CHANGE_PASS", payload:string}
 
@@ -12,7 +29,8 @@ const Signin = ({ fetchProfile, onRouteChange }) => {
       case "CHANGE_PASS":
         return { ...signInState, password: payload };
       default:
-        return new Error("FormReducer type is not valid");
+        console.error(new Error("FormReducer type is not valid"));
+        return signInState;
     }
   };
   const [signInState, signInDispatch] = useReducer(signInReducer, {
@@ -20,11 +38,13 @@ const Signin = ({ fetchProfile, onRouteChange }) => {
     password: "",
   });
 
-  const saveAuthTokenInSessions = (token) => {
+  const saveAuthTokenInSessions = (token: string) => {
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
 
-  const onSubmitSignIn = (event) => {
+  const onSubmitSignIn = (
+    event: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
     event.preventDefault();
     fetch("http://localhost:3000/signin", {
       method: "post",
@@ -73,7 +93,6 @@ const Signin = ({ fetchProfile, onRouteChange }) => {
                 className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="password"
                 autoComplete="current-password"
-                suggested="current-password"
                 name="password"
                 id="password"
                 onChange={(event) =>

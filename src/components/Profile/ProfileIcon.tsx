@@ -7,7 +7,15 @@ import {
   DropdownItem,
 } from "reactstrap";
 
-const ProfileIcon = ({ onRouteChange, toggleModal }) => {
+interface IProIcoProps {
+  onRouteChange(route: string): void;
+  toggleModal(): void;
+}
+
+const ProfileIcon: React.FC<IProIcoProps> = ({
+  onRouteChange,
+  toggleModal,
+}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
