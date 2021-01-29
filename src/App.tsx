@@ -11,6 +11,26 @@ import Modal from "./components/Modals/Modal";
 import Profile from "./components/Profile/Profile";
 import "./App.css";
 
+interface ICalculateFaceLocation {
+  id: string;
+  value: number;
+  region_info: {
+    bounding_box: {
+      left_col: number;
+      top_row: number;
+      right_col: number;
+      bottom_row: number;
+    };
+  };
+}
+
+interface IBoxMap {
+  leftCol: number;
+  topRow: number;
+  rightCol: number;
+  bottomRow: number;
+}
+
 const particlesOptions = {
   //customize this to your liking
   particles: {
@@ -25,11 +45,21 @@ const particlesOptions = {
 };
 
 const App = () => {
-  const [user, setUser] = useState({
+  interface IUser {
+    id: null | number;
+    name: string | "";
+    email: string | "";
+    entries: string | "";
+    joined: string | "";
+    age: string | "";
+    pet: string | "";
+  }
+
+  const [user, setUser] = useState<IUser>({
     id: null,
     name: "",
     email: "",
-    entries: 0,
+    entries: "0",
     joined: "",
     age: "",
     pet: "",
@@ -38,18 +68,18 @@ const App = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [route, setRoute] = useState("signin");
-  const [boxes, setBoxes] = useState([]);
+  const [boxes, setBoxes] = useState<IBoxMap[]>([]);
   const [imageUrl, setImageUrl] = useState("");
   const [input, setInput] = useState("");
 
-  const initialState = () => {
+  const initialState = (): void => {
     setUser((prevState) => {
       return {
         ...prevState,
         id: null,
         name: "",
         email: "",
-        entries: 0,
+        entries: "0",
         joined: "",
         age: "",
         pet: "",
@@ -89,64 +119,72 @@ const App = () => {
     }
   }, []);
 
-  const fetchProfile = (token, id) => {
-    fetch(`http://localhost:3000/profile/${id}`, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        Authentication: token,
-      },
-    })
-      .then((data) => data.json())
-      .then((user) => {
-        if (user.email) {
-          loadUser(user);
-          onRouteChange("home");
-        }
+  const fetchProfile = (token: string, id: number | null): void => {
+    if (id !== null) {
+      fetch(`http://localhost:3000/profile/${id.toString()}`, {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          Authentication: token,
+        },
       })
-      .catch((err) => console.log);
-  };
-
-  const loadUser = (data) => {
-    setUser((prevState) => {
-      return {
-        ...prevState,
-        id: data.id,
-        name: data.name,
-        age: data.age,
-        pet: data.pet,
-        email: data.email,
-        entries: data.entries,
-        joined: data.joined,
-      };
-    });
-  };
-
-  const calculateFaceLocation = (data) => {
-    if (data && data.outputs) {
-      return data.outputs[0].data.regions.map((face) => {
-        const clarifaiFace = face.region_info.bounding_box;
-        const image = document.getElementById("inputimage");
-        const width = Number(image.width);
-        const height = Number(image.height);
-        return {
-          leftCol: clarifaiFace.left_col * width,
-          topRow: clarifaiFace.top_row * height,
-          rightCol: width - clarifaiFace.right_col * width,
-          bottomRow: height - clarifaiFace.bottom_row * height,
-        };
-      });
+        .then((data) => data.json())
+        .then((user) => {
+          if (user.email) {
+            loadUser(user);
+            onRouteChange("home");
+          }
+        })
+        .catch((err) => console.log);
     }
-    return;
   };
 
-  const displayFaceBox = (boxes) => {
+  const loadUser = (data: IUser): void => {
+    setUser(
+      (prevState: IUser): IUser => {
+        return {
+          ...prevState,
+          id: data.id,
+          name: data.name,
+          age: data.age || "",
+          pet: data.pet || "",
+          email: data.email,
+          entries: data.entries,
+          joined: data.joined,
+        };
+      }
+    );
+  };
+
+  // A bug of typescript, the map raises an union error. forced to use *any* ↓
+  const calculateFaceLocation = (data: Array<ICalculateFaceLocation>): any => {
+    if (data !== undefined || typeof data["id"] === "number") {
+      console.log(data);
+      return data.map((face: ICalculateFaceLocation) => {
+        const clarifaiFace = face.region_info.bounding_box;
+        let image = document.getElementById("inputimage");
+        if (image !== null) {
+          const width = Number(image.offsetWidth);
+          const height = Number(image.offsetHeight);
+          return {
+            leftCol: clarifaiFace.left_col * width,
+            topRow: clarifaiFace.top_row * height,
+            rightCol: width - clarifaiFace.right_col * width,
+            bottomRow: height - clarifaiFace.bottom_row * height,
+          };
+        } else return [data];
+      });
+    } else return [data];
+  };
+
+  const displayFaceBox = (boxes: IBoxMap[]): void => {
     if (boxes) {
+      console.log("My boxes !!!", boxes);
       setBoxes(() => boxes);
     }
   };
 
-  const onInputChange = (event) => {
+  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
   };
 
@@ -157,7 +195,8 @@ const App = () => {
         method: "post",
         headers: {
           "Content-Type": "application/json",
-          Authentication: window.sessionStorage.getItem("SmartBrainToken"),
+          Authentication:
+            window.sessionStorage.getItem("SmartBrainToken") || "",
         },
         body: JSON.stringify({
           input: input,
@@ -170,9 +209,8 @@ const App = () => {
               method: "put",
               headers: {
                 "Content-Type": "application/json",
-                Authentication: window.sessionStorage.getItem(
-                  "SmartBrainToken"
-                ),
+                Authentication:
+                  window.sessionStorage.getItem("SmartBrainToken") || "",
               },
               body: JSON.stringify({
                 id: user.id,
@@ -186,7 +224,9 @@ const App = () => {
               })
               .catch(console.log);
           }
-          displayFaceBox(calculateFaceLocation(response));
+          displayFaceBox(
+            calculateFaceLocation(response.outputs[0].data.regions)
+          );
         })
         .catch((err) => console.log(err));
     } else {
@@ -197,7 +237,7 @@ const App = () => {
     }
   };
 
-  const onRouteChange = (route) => {
+  const onRouteChange = (route: string): void => {
     if (route === "signout") {
       window.sessionStorage.removeItem("SmartBrainToken");
       initialState();
@@ -207,7 +247,7 @@ const App = () => {
     setRoute(() => route);
   };
 
-  const toggleModal = () => {
+  const toggleModal = (): void => {
     setIsProfileOpen((prevState) => !prevState);
   };
 
@@ -221,12 +261,7 @@ const App = () => {
       />
       {isProfileOpen && (
         <Modal>
-          <Profile
-            isProfileOpen={isProfileOpen}
-            loadUser={loadUser}
-            toggleModal={toggleModal}
-            user={user}
-          />
+          <Profile loadUser={loadUser} toggleModal={toggleModal} user={user} />
         </Modal>
       )}
       {route === "home" ? (
@@ -243,18 +278,10 @@ const App = () => {
         loading ? (
           <h1 className="f1 fw6 ph0 mh0">Loading</h1>
         ) : (
-          <Signin
-            loadUser={loadUser}
-            onRouteChange={onRouteChange}
-            fetchProfile={fetchProfile}
-          />
+          <Signin onRouteChange={onRouteChange} fetchProfile={fetchProfile} />
         )
       ) : (
-        <Register
-          loadUser={loadUser}
-          fetchProfile={fetchProfile}
-          onRouteChange={onRouteChange}
-        />
+        <Register fetchProfile={fetchProfile} />
       )}
     </div>
   );

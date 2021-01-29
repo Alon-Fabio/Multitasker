@@ -1,15 +1,31 @@
 import React, { useReducer, useEffect } from "react";
 import PropTypes from "prop-types";
 
-const Register = ({ fetchProfile }) => {
+interface IReducerState {
+  email: string;
+  password: string;
+  name: string;
+}
+
+interface IAction {
+  type: "CHANGE_NAME" | "CHANGE_EMAIL" | "CHANGE_PASS";
+  payload: string;
+}
+
+const Register: React.FC<{
+  fetchProfile(token: string, id: number | null): void;
+}> = ({ fetchProfile }) => {
   useEffect(() => {
     const cancelCourse = () => {
-      document.getElementById("registerForm").reset();
+      (document.getElementById("registerForm") as HTMLFormElement).reset();
     };
     cancelCourse();
   }, []);
 
-  const formReducer = (registerData, action) => {
+  const formReducer = (
+    registerData: IReducerState,
+    action: IAction
+  ): IReducerState => {
     // registerData === {name:string, email:string, password:string}
     // action === {type:"CHANGE_NAME" || "CHANGE_EMAIL" || "CHANGE_PASS", payload:string}
     const { type, payload } = action;
@@ -22,7 +38,8 @@ const Register = ({ fetchProfile }) => {
       case "CHANGE_PASS":
         return { ...registerData, password: payload };
       default:
-        return new Error("FormReducer type is not valid");
+        console.error(new Error("FormReducer type is not valid"));
+        return registerData;
     }
   };
   const [registerData, registerDispatch] = useReducer(formReducer, {
@@ -31,24 +48,29 @@ const Register = ({ fetchProfile }) => {
     name: "",
   });
 
-  const saveAuthTokenInSessions = (token) => {
+  const saveAuthTokenInSessions = (token: string): void => {
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
 
-  const onSubmitSignIn = (formData, event) => {
+  const onSubmitSignIn = (
+    formData: IReducerState,
+    event: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
     event.preventDefault();
-    fetch("http://localhost:3000/register", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          fetchProfile(data.token, data.userId);
-          saveAuthTokenInSessions(data.token);
-        }
-      });
+    if (formData.password !== "" && formData.email !== "") {
+      fetch("http://localhost:3000/register", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) {
+            fetchProfile(data.token, data.userId);
+            saveAuthTokenInSessions(data.token);
+          }
+        });
+    }
   };
 
   return (

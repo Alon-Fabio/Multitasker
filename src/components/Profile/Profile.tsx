@@ -1,19 +1,19 @@
-import React, { useReducer } from "react";
-import PropTypes from "prop-types";
+import React, { useReducer, useState } from "react";
+import PropTypes, { number } from "prop-types";
 import "./Profile.css";
 
 interface IProfileProps {
   user: {
-    id: number;
+    id: null | number;
     name: string;
     email: string;
     entries: string;
     joined: string;
-    age: string;
-    pet: string;
+    age?: string;
+    pet?: string;
   };
   toggleModal(): void;
-  loadUser(user: {}): {} | null;
+  loadUser(user: {}): void;
 }
 
 interface IProState {
@@ -28,6 +28,7 @@ interface IProAction {
 }
 
 const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
+  const [ageError, setAgeError] = useState(false);
   const { id, name, age, pet } = user;
 
   const formReducer: React.Reducer<IProState, IProAction> = (
@@ -38,7 +39,15 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
       case "NAME_CHANGE":
         return { ...ProState, name: action.payload };
       case "AGE_CHANGE":
-        return { ...ProState, age: action.payload };
+        // @ts-ignore
+        if (isNaN(action.payload) === false) {
+          setAgeError(false);
+          return { ...ProState, age: action.payload };
+        } else {
+          if (!ageError) {
+            setAgeError(true);
+          }
+        }
       case "PET_CHANGE":
         return { ...ProState, pet: action.payload };
       default:
@@ -53,14 +62,13 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
   });
 
   const onProfileSave = (data: IProState) => {
-    const onProfileSaveHeaders: HeadersInit = new Headers();
-    onProfileSaveHeaders.set("Content-Type", "application/json");
-    const tokenFetch =
-      window.sessionStorage.getItem("SmartBrainToken") || "no token";
-    onProfileSaveHeaders.append("Authentication", tokenFetch);
     fetch(`http://localhost:3000/profile/${id}`, {
       method: "post",
-      headers: onProfileSaveHeaders,
+      headers: {
+        "Content-Type": "application/json",
+        Authentication:
+          window.sessionStorage.getItem("SmartBrainToken") || "no token",
+      },
       body: JSON.stringify({ formInput: data }),
     })
       .then((response: Response) => {
@@ -86,7 +94,9 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
           />
           <h1>{ProState.name || name}</h1>
           <h4>{`Image submitted: ${user.entries}`}</h4>
-          <p>{`Member since: ${new Date(user.joined).toLocaleDateString()}`}</p>
+          <p>{`Member since: ${new Date(
+            user.joined || "Who are you?"
+          ).toLocaleDateString()}`}</p>
           <hr />
 
           <label className="mt2 fw6" htmlFor="user-name">
@@ -121,6 +131,11 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
               })
             }
           />
+          {ageError ? (
+            <p className="alert alert-warning">Age needs to be a number</p>
+          ) : (
+            <p></p>
+          )}
           <label className="mt2 fw6" htmlFor="pet-name">
             Pet:
           </label>

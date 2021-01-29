@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-const Rank = ({ entries, name }) => {
+const Rank: React.FC<{
+  entries: string | undefined;
+  name: string | undefined;
+}> = ({ entries, name }) => {
   const [emoji, setEmoji] = useState("");
 
   useEffect(() => {
-    rankEmoji(entries);
+    if (entries !== undefined) {
+      rankEmoji(entries);
+    }
   }, [entries, name]);
 
-  const rankEmoji = (entries) => {
+  const rankEmoji = (entries: string): void => {
     fetch(
-      `https://x12q8i6zkb.execute-api.us-east-1.amazonaws.com/dev/rank?rank=${entries}`,
+      `https://x12q8i6zkb.execute-api.us-east-1.amazonaws.com/dev/rank?rank=${entries.toString()}`,
       {
         method: "GET",
         headers: {
@@ -39,8 +44,8 @@ const Rank = ({ entries, name }) => {
 };
 
 Rank.propTypes = {
-  entries: PropTypes.string,
-  name: PropTypes.string,
+  entries: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 Rank.defaultProps = {

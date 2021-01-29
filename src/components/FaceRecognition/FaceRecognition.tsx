@@ -12,16 +12,13 @@ interface IProps {
   }[];
 }
 interface IBoxMap {
-  i: number;
-  box: {
-    topRow: number;
-    leftCol: number;
-    rightCol: number;
-    bottomRow: number;
-  };
+  topRow: number;
+  leftCol: number;
+  rightCol: number;
+  bottomRow: number;
 }
 
-const FaceRecognition: React.FC<IProps> = ({
+const FaceRecognition: React.FC<{ imageUrl: string; boxes: any }> = ({
   imageUrl,
   boxes,
 }): JSX.Element => {
@@ -36,7 +33,7 @@ const FaceRecognition: React.FC<IProps> = ({
           height="auto"
         />
         {boxes.map(
-          (box, i): JSX.Element => {
+          (box: IBoxMap, i: number): JSX.Element => {
             return (
               <div
                 key={i}
