@@ -46,13 +46,14 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
     event.preventDefault();
-    fetch("http://localhost:3000/signin", {
+    fetch("http://13.49.244.213/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(signInState),
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         if (data.userId && data.success === "true") {
           saveAuthTokenInSessions(data.token);
           fetchProfile(data.token, data.userId);
@@ -68,15 +69,15 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f1 fw6 ph0 mh0">Sign In</legend>
             <div className="mt3">
-              <label className="db fw6 lh-copy f6" htmlFor="email-address">
+              <label className="db fw6 lh-copy f6" htmlFor="email">
                 Email
               </label>
               <input
                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
                 autoComplete="email"
-                name="email-address"
-                id="email-address"
+                name="email"
+                id="email"
                 onChange={(event) =>
                   signInDispatch({
                     type: "CHANGE_EMAIL",

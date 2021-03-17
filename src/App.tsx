@@ -98,7 +98,7 @@ const App = () => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
     if (token) {
       setLoading(() => true);
-      fetch("http://localhost:3000/signin", {
+      fetch("http://13.49.244.213/signin", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -120,8 +120,8 @@ const App = () => {
   }, []);
 
   const fetchProfile = (token: string, id: number | null): void => {
-    if (id !== null) {
-      fetch(`http://localhost:3000/profile/${id.toString()}`, {
+    if (id !== null && id !== undefined) {
+      fetch(`http://13.49.244.213/profile/${id.toString()}`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -191,7 +191,7 @@ const App = () => {
   const onButtonSubmit = () => {
     if (input !== "") {
       setImageUrl(() => input);
-      fetch("http://localhost:3000/imageurl", {
+      fetch("http://13.49.244.213/imageurl", {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +205,7 @@ const App = () => {
         .then((response) => response.json())
         .then((response) => {
           if (response) {
-            fetch("http://localhost:3000/image", {
+            fetch("http://13.49.244.213/image", {
               method: "put",
               headers: {
                 "Content-Type": "application/json",

@@ -48,6 +48,7 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
             setAgeError(true);
           }
         }
+        return ProState;
       case "PET_CHANGE":
         return { ...ProState, pet: action.payload };
       default:
@@ -62,7 +63,7 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
   });
 
   const onProfileSave = (data: IProState) => {
-    fetch(`http://localhost:3000/profile/${id}`, {
+    fetch(`http://13.49.244.213/profile/${id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +86,7 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
 
   return (
     <div className="profile-modal">
-      <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center bg-white">
+      <article className="overflow-y-auto br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center bg-white">
         <main className="pa4 black-80 w-80">
           <img
             src="http://tachyons.io/img/logo.jpg"
@@ -154,7 +155,7 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
           />
 
           <div
-            className="mt4"
+            className="mt4 pa2"
             style={{ display: "flex", justifyContent: "space-around" }}
           >
             <button

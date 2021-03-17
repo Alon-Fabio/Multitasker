@@ -1,15 +1,11 @@
 import React, { useReducer, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useForm } from "react-hook-form";
 
-interface IReducerState {
+interface IInputs {
   email: string;
   password: string;
   name: string;
-}
-
-interface IAction {
-  type: "CHANGE_NAME" | "CHANGE_EMAIL" | "CHANGE_PASS";
-  payload: string;
 }
 
 const Register: React.FC<{
@@ -22,43 +18,18 @@ const Register: React.FC<{
     cancelCourse();
   }, []);
 
-  const formReducer = (
-    registerData: IReducerState,
-    action: IAction
-  ): IReducerState => {
-    // registerData === {name:string, email:string, password:string}
-    // action === {type:"CHANGE_NAME" || "CHANGE_EMAIL" || "CHANGE_PASS", payload:string}
-    const { type, payload } = action;
-
-    switch (type) {
-      case "CHANGE_NAME":
-        return { ...registerData, name: payload };
-      case "CHANGE_EMAIL":
-        return { ...registerData, email: payload };
-      case "CHANGE_PASS":
-        return { ...registerData, password: payload };
-      default:
-        console.error(new Error("FormReducer type is not valid"));
-        return registerData;
-    }
-  };
-  const [registerData, registerDispatch] = useReducer(formReducer, {
-    email: "",
-    password: "",
-    name: "",
-  });
+  const { register, handleSubmit, watch, errors } = useForm<IInputs>();
 
   const saveAuthTokenInSessions = (token: string): void => {
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
 
-  const onSubmitSignIn = (
-    formData: IReducerState,
-    event: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => {
-    event.preventDefault();
+  const onSubmitSignIn = (formData: IInputs) => {
+    // Enter validation here
+    console.log(formData);
     if (formData.password !== "" && formData.email !== "") {
-      fetch("http://localhost:3000/register", {
+      // fetch("http://13.49.244.213/register", {
+      fetch("http://localhost:8080/register", {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -66,17 +37,23 @@ const Register: React.FC<{
         .then((response) => response.json())
         .then((data) => {
           if (data) {
+            console.log("Fetch data: ", data);
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
           }
         });
+      console.log(formData);
     }
   };
 
   return (
     <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
       <main className="pa4 black-80">
-        <form id="registerForm" className="measure">
+        <form
+          id="registerForm"
+          className="measure"
+          onSubmit={handleSubmit(onSubmitSignIn)}
+        >
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f1 fw6 ph0 mh0">Register</legend>
             <div className="mt3">
@@ -89,30 +66,25 @@ const Register: React.FC<{
                 name="name"
                 autoComplete="name"
                 id="name"
-                onChange={(event) => {
-                  registerDispatch({
-                    type: "CHANGE_NAME",
-                    payload: event.target.value,
-                  });
-                }}
+                pattern="(?=.*[a-z])(?=.*[A-Z]).{2,}"
+                title="Must contain at least one uppercase and lowercase letter, and at least 2 characters long."
+                ref={register({
+                  required: true,
+                  pattern: /[a-z][A-Z]/,
+                })}
               />
             </div>
             <div className="mt3">
-              <label className="db fw6 lh-copy f6" htmlFor="email-address">
+              <label className="db fw6 lh-copy f6" htmlFor="email">
                 Email
               </label>
               <input
                 className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
                 autoComplete="email"
-                name="email-address"
-                id="email-address"
-                onChange={(event) => {
-                  registerDispatch({
-                    type: "CHANGE_EMAIL",
-                    payload: event.target.value,
-                  });
-                }}
+                name="email"
+                id="email"
+                ref={register({ required: true })}
               />
             </div>
             <div className="mv3">
@@ -125,20 +97,14 @@ const Register: React.FC<{
                 name="password"
                 autoComplete="new-password"
                 id="password"
-                onChange={(event) => {
-                  registerDispatch({
-                    type: "CHANGE_PASS",
-                    payload: event.target.value,
-                  });
-                }}
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}"
+                title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 characters long."
+                ref={register({ required: true })}
               />
             </div>
           </fieldset>
           <div className="">
             <input
-              onClick={(event) => {
-                onSubmitSignIn(registerData, event);
-              }}
               className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
               type="submit"
               value="Register"
