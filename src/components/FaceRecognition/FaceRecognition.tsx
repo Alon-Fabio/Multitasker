@@ -18,13 +18,23 @@ interface IBoxMap {
   bottomRow: number;
 }
 
+
 const FaceRecognition: React.FC<{ imageUrl: string; boxes: any }> = ({
   imageUrl,
   boxes,
 }): JSX.Element => {
+ 
   return (
-    <div className="center ma">
-      <div className="absolute mt2">
+    <div >
+    <div className="center">
+    <img className="ma2"
+          alt=""
+          id="inputimage"
+          src={imageUrl}
+          width="500px"
+          height="auto"
+        />
+      <div className="ma2 absolute block">
         <img
           id="inputimage"
           alt=""
@@ -49,6 +59,7 @@ const FaceRecognition: React.FC<{ imageUrl: string; boxes: any }> = ({
           }
         )}
       </div>
+    </div>
     </div>
   );
 };

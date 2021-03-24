@@ -46,7 +46,7 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
     event.preventDefault();
-    fetch("http://13.49.244.213/signin", {
+    fetch("http://localhost:8080/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(signInState),

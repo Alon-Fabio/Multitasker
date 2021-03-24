@@ -29,7 +29,7 @@ const Register: React.FC<{
     console.log(formData);
     if (formData.password !== "" && formData.email !== "") {
       // fetch("http://13.49.244.213/register", {
-      fetch("http://localhost:8080/register", {
+      fetch("http://localhost/register", {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

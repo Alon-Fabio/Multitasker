@@ -63,7 +63,7 @@ const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser }) => {
   });
 
   const onProfileSave = (data: IProState) => {
-    fetch(`http://13.49.244.213/profile/${id}`, {
+    fetch(`http://localhost:8080/profile/${id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

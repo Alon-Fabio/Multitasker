@@ -94,11 +94,14 @@ const App = () => {
     setInput("");
   };
 
+  const testing = "localhost"
+  const production = "13.49.244.213"
+
   useEffect(() => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
     if (token) {
       setLoading(() => true);
-      fetch("http://13.49.244.213/signin", {
+      fetch(`http://${testing}/signin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +124,7 @@ const App = () => {
 
   const fetchProfile = (token: string, id: number | null): void => {
     if (id !== null && id !== undefined) {
-      fetch(`http://13.49.244.213/profile/${id.toString()}`, {
+      fetch(`http://${testing}/profile/${id.toString()}`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +162,6 @@ const App = () => {
   // A bug of typescript, the map raises an union error. forced to use *any* ↓
   const calculateFaceLocation = (data: Array<ICalculateFaceLocation>): any => {
     if (data !== undefined || typeof data["id"] === "number") {
-      console.log(data);
       return data.map((face: ICalculateFaceLocation) => {
         const clarifaiFace = face.region_info.bounding_box;
         let image = document.getElementById("inputimage");
@@ -179,7 +181,6 @@ const App = () => {
 
   const displayFaceBox = (boxes: IBoxMap[]): void => {
     if (boxes) {
-      console.log("My boxes !!!", boxes);
       setBoxes(() => boxes);
     }
   };
@@ -191,7 +192,7 @@ const App = () => {
   const onButtonSubmit = () => {
     if (input !== "") {
       setImageUrl(() => input);
-      fetch("http://13.49.244.213/imageurl", {
+      fetch(`http://${testing}/imageurl`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +206,7 @@ const App = () => {
         .then((response) => response.json())
         .then((response) => {
           if (response) {
-            fetch("http://13.49.244.213/image", {
+            fetch(`http://${testing}/image`, {
               method: "put",
               headers: {
                 "Content-Type": "application/json",
@@ -268,11 +269,11 @@ const App = () => {
         <div>
           <Logo />
           <Rank name={user.name} entries={user.entries} />
+          {imageUrl?<FaceRecognition boxes={boxes} imageUrl={imageUrl} />:null}
           <ImageLinkForm
             onInputChange={onInputChange}
             onButtonSubmit={onButtonSubmit}
-          />
-          <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
+            />
         </div>
       ) : route === "signin" ? (
         loading ? (
