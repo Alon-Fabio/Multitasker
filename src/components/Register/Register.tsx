@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 
@@ -9,8 +9,8 @@ interface IInputs {
 }
 
 const Register: React.FC<{
-  fetchProfile(token: string, id: number | null): void;
-}> = ({ fetchProfile }) => {
+  fetchProfile(token: string, id: number | null): void; stage: string;
+}> = ({ fetchProfile, stage }) => {
   useEffect(() => {
     const cancelCourse = () => {
       (document.getElementById("registerForm") as HTMLFormElement).reset();
@@ -26,10 +26,8 @@ const Register: React.FC<{
 
   const onSubmitSignIn = (formData: IInputs) => {
     // Enter validation here
-    console.log(formData);
     if (formData.password !== "" && formData.email !== "") {
-      // fetch("http://13.49.244.213/register", {
-      fetch("http://localhost/register", {
+      fetch(`http://${stage}/register`, {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -37,12 +35,10 @@ const Register: React.FC<{
         .then((response) => response.json())
         .then((data) => {
           if (data) {
-            console.log("Fetch data: ", data);
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
           }
         });
-      console.log(formData);
     }
   };
 
@@ -70,7 +66,7 @@ const Register: React.FC<{
                 title="Must contain at least one uppercase and lowercase letter, and at least 2 characters long."
                 ref={register({
                   required: true,
-                  pattern: /[a-z][A-Z]/,
+                  pattern: /(?=.*[a-z])(?=.*[A-Z])/i,
                 })}
               />
             </div>
@@ -118,6 +114,7 @@ const Register: React.FC<{
 
 Register.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
+  stage: PropTypes.string.isRequired
 };
 
 export default Register;

@@ -19,7 +19,7 @@ interface IBoxMap {
 }
 
 
-const FaceRecognition: React.FC<{ imageUrl: string; boxes: any }> = ({
+const FaceRecognition: React.FC<{ imageUrl: string; boxes: any; stage: string }> = ({
   imageUrl,
   boxes,
 }): JSX.Element => {
@@ -74,6 +74,7 @@ FaceRecognition.propTypes = {
       bottomRow: PropTypes.number.isRequired,
     }).isRequired
   ).isRequired,
+  stage: PropTypes.string.isRequired
 };
 
 export default FaceRecognition;

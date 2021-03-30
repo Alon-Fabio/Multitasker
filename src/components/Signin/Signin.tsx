@@ -1,9 +1,10 @@
 import React, { useReducer } from "react";
-import PropTypes from "prop-types";
+import PropTypes, { string } from "prop-types";
 
 interface ISigProps {
   fetchProfile(token: string, id: number | null): void;
   onRouteChange(route: string): void;
+  stage: string
 }
 
 interface ISgnRedState {
@@ -15,7 +16,7 @@ interface ISigRedAction {
   payload: string;
 }
 
-const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
+const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => {
   const signInReducer = (
     signInState: ISgnRedState,
     { type, payload }: ISigRedAction
@@ -46,7 +47,7 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
     event.preventDefault();
-    fetch("http://localhost:8080/signin", {
+    fetch(`http://${stage}/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(signInState),
@@ -130,6 +131,8 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange }) => {
 Signin.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   onRouteChange: PropTypes.func.isRequired,
+  stage: PropTypes.string.isRequired
+
 };
 
 export default Signin;

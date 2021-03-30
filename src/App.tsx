@@ -11,6 +11,9 @@ import Modal from "./components/Modals/Modal";
 import Profile from "./components/Profile/Profile";
 import "./App.css";
 
+const dev = "localhost";
+const production = "13.49.244.213";
+
 interface ICalculateFaceLocation {
   id: string;
   value: number;
@@ -64,6 +67,7 @@ const App = () => {
     age: "",
     pet: "",
   });
+  const [stage, setStage] = useState(production);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -94,14 +98,11 @@ const App = () => {
     setInput("");
   };
 
-  const testing = "localhost"
-  const production = "13.49.244.213"
-
   useEffect(() => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
     if (token) {
       setLoading(() => true);
-      fetch(`http://${testing}/signin`, {
+      fetch(`http://${stage}/signin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +125,7 @@ const App = () => {
 
   const fetchProfile = (token: string, id: number | null): void => {
     if (id !== null && id !== undefined) {
-      fetch(`http://${testing}/profile/${id.toString()}`, {
+      fetch(`http://${stage}/profile/${id.toString()}`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -191,8 +192,7 @@ const App = () => {
 
   const onButtonSubmit = () => {
     if (input !== "") {
-      setImageUrl(() => input);
-      fetch(`http://${testing}/imageurl`, {
+      fetch(`http://${stage}/imageurl`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -205,8 +205,16 @@ const App = () => {
       })
         .then((response) => response.json())
         .then((response) => {
-          if (response) {
-            fetch(`http://${testing}/image`, {
+          if (response && response.status.code === undefined) {
+            console.log("Binnnnnnnnnnnng!");
+            displayFaceBox([]);
+            setImageUrl(
+              "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+            );
+          }
+          if (response && response.status.code !== "10000") {
+            setImageUrl(() => input);
+            fetch(`http://${stage}/image`, {
               method: "put",
               headers: {
                 "Content-Type": "application/json",
@@ -223,13 +231,21 @@ const App = () => {
                   return { ...prevState, entries: count };
                 });
               })
-              .catch(console.log);
+              .catch((err) => {
+                console.error(err);
+              });
           }
           displayFaceBox(
             calculateFaceLocation(response.outputs[0].data.regions)
           );
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          displayFaceBox([]);
+          setImageUrl(
+            "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+          );
+          console.error(err);
+        });
     } else {
       displayFaceBox([]);
       setImageUrl(
@@ -262,27 +278,38 @@ const App = () => {
       />
       {isProfileOpen && (
         <Modal>
-          <Profile loadUser={loadUser} toggleModal={toggleModal} user={user} />
+          <Profile
+            loadUser={loadUser}
+            toggleModal={toggleModal}
+            user={user}
+            stage={stage}
+          />
         </Modal>
       )}
       {route === "home" ? (
         <div>
           <Logo />
           <Rank name={user.name} entries={user.entries} />
-          {imageUrl?<FaceRecognition boxes={boxes} imageUrl={imageUrl} />:null}
+          {imageUrl ? (
+            <FaceRecognition boxes={boxes} imageUrl={imageUrl} stage={stage} />
+          ) : null}
           <ImageLinkForm
             onInputChange={onInputChange}
             onButtonSubmit={onButtonSubmit}
-            />
+          />
         </div>
       ) : route === "signin" ? (
         loading ? (
           <h1 className="f1 fw6 ph0 mh0">Loading</h1>
         ) : (
-          <Signin onRouteChange={onRouteChange} fetchProfile={fetchProfile} />
+          <Signin
+            onRouteChange={onRouteChange}
+            fetchProfile={fetchProfile}
+            stage={stage}
+          />
         )
       ) : (
-        <Register fetchProfile={fetchProfile} />
+        <Register fetchProfile={fetchProfile} stage={stage} />
       )}
     </div>
   );
