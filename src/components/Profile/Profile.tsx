@@ -14,7 +14,7 @@ interface IProfileProps {
   };
   toggleModal(): void;
   loadUser(user: {}): void;
-  stage: string
+  stage: string;
 }
 
 interface IProState {
@@ -28,7 +28,12 @@ interface IProAction {
   payload: string;
 }
 
-const Profile: React.FC<IProfileProps> = ({ user, toggleModal, loadUser, stage }) => {
+const Profile: React.FC<IProfileProps> = ({
+  user,
+  toggleModal,
+  loadUser,
+  stage,
+}) => {
   const [ageError, setAgeError] = useState(false);
   const { id, name, age, pet } = user;
 
@@ -193,7 +198,7 @@ Profile.propTypes = {
     age: PropTypes.string.isRequired,
     pet: PropTypes.string.isRequired,
   }).isRequired,
-  stage: PropTypes.string.isRequired
+  stage: PropTypes.string.isRequired,
 };
 
 export default Profile;

@@ -15,3 +15,17 @@
   left: 0;
   z-index: -1;
 }
+
+#LogoComponent {
+  margin: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+@media screen and (max-width: 720px) {
+  #LogoComponent {
+    margin: 28px;
+    flex-direction: column;
+  }
+}

@@ -10,9 +10,22 @@ import Rank from "./components/Rank/Rank";
 import Modal from "./components/Modals/Modal";
 import Profile from "./components/Profile/Profile";
 import "./App.css";
+import faceDetectPic from "./Style/images/face-detection.png";
+import graphPic from "./Style/images/graph.png";
+import { readBuilderProgram } from "typescript";
 
-const dev = "localhost";
-const production = "13.49.244.213";
+// True for production and false for dev (dev will start at the home screen, and not the signin screen)
+if (false) {
+  var stageOfBuild = {
+    stage: "13.49.244.213",
+    startPoint: "signin",
+  };
+} else {
+  stageOfBuild = {
+    stage: "localhost",
+    startPoint: "home",
+  };
+}
 
 interface ICalculateFaceLocation {
   id: string;
@@ -67,11 +80,11 @@ const App = () => {
     age: "",
     pet: "",
   });
-  const [stage, setStage] = useState(production);
+  const [stage, setStage] = useState(stageOfBuild.stage);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [route, setRoute] = useState("signin");
+  const [route, setRoute] = useState(stageOfBuild.startPoint);
   const [boxes, setBoxes] = useState<IBoxMap[]>([]);
   const [imageUrl, setImageUrl] = useState("");
   const [input, setInput] = useState("");
@@ -206,7 +219,6 @@ const App = () => {
         .then((response) => response.json())
         .then((response) => {
           if (response && response.status.code === undefined) {
-            console.log("Binnnnnnnnnnnng!");
             displayFaceBox([]);
             setImageUrl(
               "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
@@ -287,8 +299,20 @@ const App = () => {
         </Modal>
       )}
       {route === "home" ? (
+        <div id="LogoComponent">
+          <Logo
+            image={faceDetectPic}
+            context={"Face Recognition"}
+            setRoute={{ setRoute: setRoute, route: "faceDetection" }}
+          />
+          <Logo
+            image={graphPic}
+            context={"coming soon.."}
+            setRoute={{ setRoute: setRoute, route: "home" }}
+          />
+        </div>
+      ) : route === "faceDetection" ? (
         <div>
-          <Logo />
           <Rank name={user.name} entries={user.entries} />
           {imageUrl ? (
             <FaceRecognition boxes={boxes} imageUrl={imageUrl} stage={stage} />
