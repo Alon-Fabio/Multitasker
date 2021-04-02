@@ -12,7 +12,6 @@ import Profile from "./components/Profile/Profile";
 import "./App.css";
 import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
-import { readBuilderProgram } from "typescript";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
 if (false) {
@@ -23,7 +22,7 @@ if (false) {
 } else {
   stageOfBuild = {
     stage: "localhost",
-    startPoint: "home",
+    startPoint: "signin",
   };
 }
 
@@ -88,6 +87,7 @@ const App = () => {
   const [boxes, setBoxes] = useState<IBoxMap[]>([]);
   const [imageUrl, setImageUrl] = useState("");
   const [input, setInput] = useState("");
+  const [SubmitTimeout, setSubmitTimeout] = useState(true);
 
   const initialState = (): void => {
     setUser((prevState) => {
@@ -204,65 +204,69 @@ const App = () => {
   };
 
   const onButtonSubmit = () => {
-    if (input !== "") {
-      fetch(`http://${stage}/imageurl`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          Authentication:
-            window.sessionStorage.getItem("SmartBrainToken") || "",
-        },
-        body: JSON.stringify({
-          input: input,
-        }),
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response && response.status.code === undefined) {
+    if (SubmitTimeout) {
+      setSubmitTimeout(false);
+      setTimeout(() => setSubmitTimeout(true), 3000);
+      if (input !== "") {
+        fetch(`http://${stage}/imageurl`, {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            Authentication:
+              window.sessionStorage.getItem("SmartBrainToken") || "",
+          },
+          body: JSON.stringify({
+            input: input,
+          }),
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response && response.status.code === undefined) {
+              displayFaceBox([]);
+              setImageUrl(
+                "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+              );
+            }
+            if (response && response.status.code !== "10000") {
+              setImageUrl(() => input);
+              fetch(`http://${stage}/image`, {
+                method: "put",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authentication:
+                    window.sessionStorage.getItem("SmartBrainToken") || "",
+                },
+                body: JSON.stringify({
+                  id: user.id,
+                }),
+              })
+                .then((response) => response.json())
+                .then((count) => {
+                  setUser((prevState) => {
+                    return { ...prevState, entries: count };
+                  });
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+            displayFaceBox(
+              calculateFaceLocation(response.outputs[0].data.regions)
+            );
+          })
+          .catch((err) => {
             displayFaceBox([]);
             setImageUrl(
               "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
             );
-          }
-          if (response && response.status.code !== "10000") {
-            setImageUrl(() => input);
-            fetch(`http://${stage}/image`, {
-              method: "put",
-              headers: {
-                "Content-Type": "application/json",
-                Authentication:
-                  window.sessionStorage.getItem("SmartBrainToken") || "",
-              },
-              body: JSON.stringify({
-                id: user.id,
-              }),
-            })
-              .then((response) => response.json())
-              .then((count) => {
-                setUser((prevState) => {
-                  return { ...prevState, entries: count };
-                });
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          }
-          displayFaceBox(
-            calculateFaceLocation(response.outputs[0].data.regions)
-          );
-        })
-        .catch((err) => {
-          displayFaceBox([]);
-          setImageUrl(
-            "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
-          );
-          console.error(err);
-        });
-    } else {
-      displayFaceBox([]);
-      setImageUrl(
-        "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
-      );
+            console.error(err);
+          });
+      } else {
+        displayFaceBox([]);
+        setImageUrl(
+          "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+        );
+      }
     }
   };
 
@@ -272,6 +276,8 @@ const App = () => {
       initialState();
     } else if (route === "home") {
       setIsSignedIn(() => true);
+    } else if (route === "faceDetection") {
+      setRoute("faceDetection");
     }
     setRoute(() => route);
   };
@@ -303,12 +309,15 @@ const App = () => {
           <Logo
             image={faceDetectPic}
             context={"Face Recognition"}
-            setRoute={{ setRoute: setRoute, route: "faceDetection" }}
+            onRouteChangeObj={{
+              onRouteChange: onRouteChange,
+              route: "faceDetection",
+            }}
           />
           <Logo
             image={graphPic}
             context={"coming soon.."}
-            setRoute={{ setRoute: setRoute, route: "home" }}
+            onRouteChangeObj={{ onRouteChange: onRouteChange, route: "home" }}
           />
         </div>
       ) : route === "faceDetection" ? (

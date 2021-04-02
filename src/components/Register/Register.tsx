@@ -9,7 +9,8 @@ interface IInputs {
 }
 
 const Register: React.FC<{
-  fetchProfile(token: string, id: number | null): void; stage: string;
+  fetchProfile(token: string, id: number | null): void;
+  stage: string;
 }> = ({ fetchProfile, stage }) => {
   useEffect(() => {
     const cancelCourse = () => {
@@ -18,7 +19,7 @@ const Register: React.FC<{
     cancelCourse();
   }, []);
 
-  const { register, handleSubmit, watch, errors } = useForm<IInputs>();
+  const { register, handleSubmit } = useForm<IInputs>();
 
   const saveAuthTokenInSessions = (token: string): void => {
     window.sessionStorage.setItem("SmartBrainToken", token);
@@ -44,7 +45,7 @@ const Register: React.FC<{
 
   return (
     <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-      <main className="pa4 black-80">
+      <main className="pa4">
         <form
           id="registerForm"
           className="measure"
@@ -99,9 +100,9 @@ const Register: React.FC<{
               />
             </div>
           </fieldset>
-          <div className="">
+          <div>
             <input
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+              className="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-register"
               type="submit"
               value="Register"
             />
@@ -114,7 +115,7 @@ const Register: React.FC<{
 
 Register.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
-  stage: PropTypes.string.isRequired
+  stage: PropTypes.string.isRequired,
 };
 
 export default Register;

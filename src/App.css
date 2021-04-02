@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  height: 100%;
+  width: 100%;
 }
 
 .center {
@@ -16,8 +18,12 @@
   z-index: -1;
 }
 
+.input-register, .input-signin {
+  background-color: rgba(127, 255, 212, 0.082) !important;
+  color: rgb(195, 223, 248);
+}
+
 #LogoComponent {
-  margin: 10px;
   display: flex;
   justify-content: space-evenly;
   align-content: center;
@@ -25,7 +31,7 @@
 
 @media screen and (max-width: 720px) {
   #LogoComponent {
-    margin: 28px;
+    margin: 0px;
     flex-direction: column;
   }
 }

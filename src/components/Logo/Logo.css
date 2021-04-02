@@ -1,19 +1,33 @@
 .Tilt {
-  background: linear-gradient(89deg, #FF5EDF 0%, #04C8DE 100%); /* w3c */
-  /* height: 70vh; */
+  background: linear-gradient(315deg, #cc72ba 0%, #6fc3cc 100%); /* w3c */
+  box-shadow: 7px 7px 23px -11px rgba(0,0,0,0.75);
+  box-shadow: -8px -3px 23px -11px rgba(0,0,0,0.75);
+  box-shadow: inset 17px 15px 10px -11px rgba(255,255,255,1);
+  box-shadow: inset -9px -10px 10px -11px rgba(0,0,0,1);
   height: 70vh;
- width: 70vh;
+  width: 70vh;
+  margin: 0 auto;
+
 
 }
 
-img {
-  min-width: 300px;
+.Logo img {
+  border-radius: 4px;
+  min-width: 200px;
   width: auto;
   height: auto;
   padding: 5px;
 }
 
-h1 {
-  min-width: 300px;
+.Logo h1 {
+  color: #04C8DE;
+  font-weight:500;
   width: auto;
+}
+
+@media screen and (max-width: 720px) {
+  .Tilt {
+height: auto;
+width: 70vw;
+  }
 }

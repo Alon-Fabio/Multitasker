@@ -4,23 +4,25 @@ import "./Logo.css";
 
 /// <reference path="./types.d.ts"/>
 
-const Logo: React.FC<{
+interface ILogoProps {
   image: string;
   context: string;
-  setRoute: {
-    setRoute(route: string): void;
+  onRouteChangeObj: {
+    onRouteChange(route: string): void;
     route: string;
   };
-}> = ({ image, context, setRoute }) => {
+}
+
+const Logo: React.FC<ILogoProps> = ({ image, context, onRouteChangeObj }) => {
   return (
     <div
-      className="ma4 mt0"
+      className="mt4 mb4 mt0 Logo"
       onClick={(event: React.MouseEvent<HTMLElement>) =>
-        setRoute.setRoute(setRoute.route)
+        onRouteChangeObj.onRouteChange(onRouteChangeObj.route)
       }
     >
       <h1>{context}</h1>
-      <Tilt className="Tilt br4 shadow-2" options={{ max: 55 }}>
+      <Tilt className="Tilt br4 " options={{ max: 55 }}>
         <div className="Tilt-inner pa3">
           <img alt="logo" src={image} />
         </div>

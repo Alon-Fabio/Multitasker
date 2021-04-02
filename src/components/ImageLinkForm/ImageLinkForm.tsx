@@ -13,19 +13,23 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
 }) => {
   return (
     <div className="ma2 mh4">
-      <p className="f3 b">
-        {"This Magic Brain will detect faces in your pictures. Give it a try!"}
-      </p>
-      <p className="f3 b">{"Try pasting in a url of a photo."}</p>
+      <div className="f3 b-400 white">
+        <p>
+          {
+            "This Magic Brain will detect faces in your pictures. Give it a try!"
+          }
+        </p>
+        <p>{"Try pasting in a url of a photo."}</p>
+      </div>
       <div className="center">
-        <div className="form center pa4 br3 shadow-5">
+        <div className="imageForm center pa4 br3 shadow-5">
           <input
-            className="f4 pa2 w-70 center"
+            className="f4 pa2 w-100 center"
             type="tex"
             onChange={onInputChange}
           />
           <button
-            className="w-30 grow f4 link ph3 pv2 dib white bg-light-purple"
+            className="grow f4 link ph3 pv2 dib white bg-light-purple"
             onClick={onButtonSubmit}
           >
             Detect

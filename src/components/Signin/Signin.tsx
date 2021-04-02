@@ -4,7 +4,7 @@ import PropTypes, { string } from "prop-types";
 interface ISigProps {
   fetchProfile(token: string, id: number | null): void;
   onRouteChange(route: string): void;
-  stage: string
+  stage: string;
 }
 
 interface ISgnRedState {
@@ -16,7 +16,11 @@ interface ISigRedAction {
   payload: string;
 }
 
-const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => {
+const Signin: React.FC<ISigProps> = ({
+  fetchProfile,
+  onRouteChange,
+  stage,
+}) => {
   const signInReducer = (
     signInState: ISgnRedState,
     { type, payload }: ISigRedAction
@@ -54,7 +58,6 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => 
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.userId && data.success === "true") {
           saveAuthTokenInSessions(data.token);
           fetchProfile(data.token, data.userId);
@@ -65,7 +68,7 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => 
 
   return (
     <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-      <main className="pa4 black-80">
+      <main className="pa4">
         <form className="measure">
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f1 fw6 ph0 mh0">Sign In</legend>
@@ -109,7 +112,7 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => 
           <div className="">
             <input
               onClick={(event) => onSubmitSignIn(event)}
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-signin"
               type="submit"
               value="Sign in"
             />
@@ -117,7 +120,7 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => 
           <div className="lh-copy mt3">
             <p
               onClick={() => onRouteChange("register")}
-              className="f6 link dim black db pointer"
+              className="f6 link dim db pointer"
             >
               Register
             </p>
@@ -131,8 +134,7 @@ const Signin: React.FC<ISigProps> = ({ fetchProfile, onRouteChange, stage }) => 
 Signin.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
   onRouteChange: PropTypes.func.isRequired,
-  stage: PropTypes.string.isRequired
-
+  stage: PropTypes.string.isRequired,
 };
 
 export default Signin;

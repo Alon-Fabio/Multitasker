@@ -1,10 +1,20 @@
+html {
+  min-height: 100vh;
+}
+
+body, html{
+  margin:0;
+  padding:0;
+}
+
 body {
-  margin: 0;
-  padding: 0;
+  width: 100%;
   font-family: "Courier New", Courier, monospace;
-  background: linear-gradient(89deg, #FF5EDF 0%, #04C8DE 100%); /* w3c */
+  color: rgb(195, 223, 248);
+  background: linear-gradient(45deg, #25284b 0%, #3a1523 100%); /* w3c */
 }
 
 button {
   cursor: pointer;
 }
+

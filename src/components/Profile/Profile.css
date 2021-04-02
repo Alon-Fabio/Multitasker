@@ -1,5 +1,5 @@
 .profile-modal {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(90, 89, 89, 0.8);
     position: fixed;
     height: 100%;
     width: 100%;
@@ -8,9 +8,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: rgb(216, 230, 241);
 }
 
 article {
+    background: linear-gradient(45deg, #25284b 0%, #3a1523 100%);
+    box-shadow: 7px 7px 23px -11px rgba(0,0,0,0.75);
+  box-shadow: -8px -3px 23px -11px rgba(0,0,0,0.75);
+  box-shadow: inset 17px 15px 10px -11px rgba(255,255,255,1);
+  box-shadow: inset -9px -10px 10px -11px rgba(0,0,0,1);
+  border-radius: .5rem;
     height: 90%;
 }
 
@@ -24,3 +31,14 @@ article {
     color: gray;
     cursor: pointer;
 }
+
+@media screen and (max-width: 720px) {
+    article {
+        height: 100%;
+        border-radius: 0%;
+        display: flex;
+    }
+    main {
+        align-self: center;
+    }
+  }
