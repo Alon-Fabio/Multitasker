@@ -14,9 +14,9 @@ import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (false) {
+if (true) {
   var stageOfBuild = {
-    stage: "13.49.244.213",
+    stage: "44.204.229.83",
     startPoint: "signin",
   };
 } else {
@@ -157,20 +157,18 @@ const App = () => {
   };
 
   const loadUser = (data: IUser): void => {
-    setUser(
-      (prevState: IUser): IUser => {
-        return {
-          ...prevState,
-          id: data.id,
-          name: data.name,
-          age: data.age || "",
-          pet: data.pet || "",
-          email: data.email,
-          entries: data.entries,
-          joined: data.joined,
-        };
-      }
-    );
+    setUser((prevState: IUser): IUser => {
+      return {
+        ...prevState,
+        id: data.id,
+        name: data.name,
+        age: data.age || "",
+        pet: data.pet || "",
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined,
+      };
+    });
   };
 
   // A bug of typescript, the map raises an union error. forced to use *any* ↓
