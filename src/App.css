@@ -1,12 +1,17 @@
 .App {
+  min-height: 100vh;
   text-align: center;
-  height: 100%;
-  width: 100%;
 }
 
 .center {
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+  /* background: transparent; */
 }
 
 .particles {
@@ -15,10 +20,25 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.input-register, .input-signin {
+nav {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-self: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: center;
+  margin: 0;
+  z-index: 99;
+}
+
+.input-register,
+.input-signin {
   background-color: rgba(127, 255, 212, 0.082) !important;
   color: rgb(195, 223, 248);
 }
@@ -29,9 +49,18 @@
   align-content: center;
 }
 
+.face_detection {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 @media screen and (max-width: 720px) {
+  nav {
+    justify-content: space-evenly;
+  }
   #LogoComponent {
-    margin: 0px;
+    align-items: center;
     flex-direction: column;
   }
 }

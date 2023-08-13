@@ -28,11 +28,12 @@ const ProfileIcon: React.FC<IProIcoProps> = ({
           data-toggle="dropdown"
           aria-expanded={dropdownOpen}
         >
-          <img
+          {/* <img
             src="http://tachyons.io/img/logo.jpg"
             className="br-100 pa1 ba b--black-10 h3 w3"
             alt="avatar"
-          />
+          /> */}
+          <i className="fa-solid fa-user  pointer b--black-10"></i>
         </DropdownToggle>
         <DropdownMenu
           right

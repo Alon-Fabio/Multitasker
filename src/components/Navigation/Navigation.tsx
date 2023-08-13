@@ -2,35 +2,43 @@ import React from "react";
 import PropTypes from "prop-types";
 import ProfileIcon from "../Profile/ProfileIcon";
 
+interface IStyleTheme {
+  color: string;
+  backgroundColor?: string;
+  links?: string;
+}
+
 interface NavProps {
   onRouteChange(route: string): void;
   isSignedIn: boolean;
   toggleModal(): void;
+  StyleTheme: IStyleTheme;
 }
 
 const Navigation: React.FC<NavProps> = ({
   onRouteChange,
   isSignedIn,
   toggleModal,
+  StyleTheme,
 }) => {
   if (isSignedIn) {
     return (
-      <nav style={{ display: "flex", justifyContent: "flex-end" }}>
+      <nav>
         <ProfileIcon onRouteChange={onRouteChange} toggleModal={toggleModal} />
       </nav>
     );
   } else {
     return (
-      <nav style={{ display: "flex", justifyContent: "flex-end" }}>
+      <nav className={`${StyleTheme.backgroundColor}`}>
         <p
           onClick={() => onRouteChange("signin")}
-          className="f3 link dim underline pa3 pointer"
+          className={`f3 link dim pa3 pointer ${StyleTheme.links}`}
         >
           Sign In
         </p>
         <p
           onClick={() => onRouteChange("register")}
-          className="f3 link dim underline pa3 pointer"
+          className={`f3 link dim pa3 pointer ${StyleTheme.links}`}
         >
           Register
         </p>

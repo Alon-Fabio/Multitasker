@@ -6,7 +6,7 @@ import "./Modal.css";
 const modalRoot: HTMLElement | null = document.getElementById("modal-root");
 
 const Modal: React.FC<React.ReactNode> = ({ children }) => {
-  const [el, setEl] = useState(document.createElement("div"));
+  const [el] = useState(document.createElement("div"));
   useEffect(() => {
     if (modalRoot) {
       modalRoot.appendChild(el);

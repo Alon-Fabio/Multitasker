@@ -6,3 +6,10 @@
   justify-content: center;
   cursor: pointer;
 }
+.bounding-box:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+#inputimage {
+  height: 100%;
+  max-width: 500px;
+}

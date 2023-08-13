@@ -14,15 +14,16 @@ import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (true) {
+if (false) {
   var stageOfBuild = {
-    stage: "44.204.229.83",
+    route: "44.204.229.83",
     startPoint: "signin",
   };
 } else {
   stageOfBuild = {
-    stage: "localhost",
-    startPoint: "signin",
+    route: "localhost",
+    startPoint: "faceDetection",
+    // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
 }
 
@@ -46,6 +47,12 @@ interface IBoxMap {
   bottomRow: number;
 }
 
+interface IStyleTheme {
+  color: string;
+  backgroundColor?: string;
+  links?: string;
+}
+
 const particlesOptions = {
   //customize this to your liking
   particles: {
@@ -58,18 +65,17 @@ const particlesOptions = {
     },
   },
 };
+interface IUser {
+  id: null | number;
+  name: string | "";
+  email: string | "";
+  entries: string | "";
+  joined: string | "";
+  age: string | "";
+  pet: string | "";
+}
 
 const App = () => {
-  interface IUser {
-    id: null | number;
-    name: string | "";
-    email: string | "";
-    entries: string | "";
-    joined: string | "";
-    age: string | "";
-    pet: string | "";
-  }
-
   const [user, setUser] = useState<IUser>({
     id: null,
     name: "",
@@ -79,7 +85,14 @@ const App = () => {
     age: "",
     pet: "",
   });
-  const [stage, setStage] = useState(stageOfBuild.stage);
+
+  const StyleThemeSetup = {
+    color: "light-blue",
+    links: "lightest-blue",
+    backgroundColor: "bg-navy",
+  };
+
+  const [stage] = useState(stageOfBuild.route);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -88,6 +101,8 @@ const App = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [input, setInput] = useState("");
   const [SubmitTimeout, setSubmitTimeout] = useState(true);
+  const [StyleTheme] = useState<IStyleTheme>(StyleThemeSetup);
+  const [, setLoaded] = useState(false);
 
   const initialState = (): void => {
     setUser((prevState) => {
@@ -109,6 +124,53 @@ const App = () => {
     setBoxes([]);
     setImageUrl("");
     setInput("");
+  };
+
+  const loadUser = (data: IUser): void => {
+    setUser((prevState: IUser): IUser => {
+      return {
+        ...prevState,
+        id: data.id,
+        name: data.name,
+        age: data.age || "",
+        pet: data.pet || "",
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined,
+      };
+    });
+  };
+
+  const onRouteChange = (route: string): void => {
+    if (route === "signout") {
+      window.sessionStorage.removeItem("SmartBrainToken");
+      initialState();
+    } else if (route === "home") {
+      setIsSignedIn(() => true);
+    } else if (route === "faceDetection") {
+      setRoute("faceDetection");
+    }
+    setRoute(() => route);
+  };
+
+  const fetchProfile = (token: string, id: number | null): void => {
+    if (id !== null && id !== undefined) {
+      fetch(`http://${stage}/profile/${id.toString()}`, {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          Authentication: token,
+        },
+      })
+        .then((data) => data.json())
+        .then((user) => {
+          if (user.email) {
+            loadUser(user);
+            onRouteChange("home");
+          }
+        })
+        .catch((err) => console.log);
+    }
   };
 
   useEffect(() => {
@@ -134,52 +196,21 @@ const App = () => {
     } else {
       setLoading(() => false);
     }
-  }, []);
-
-  const fetchProfile = (token: string, id: number | null): void => {
-    if (id !== null && id !== undefined) {
-      fetch(`http://${stage}/profile/${id.toString()}`, {
-        method: "get",
-        headers: {
-          "Content-Type": "application/json",
-          Authentication: token,
-        },
-      })
-        .then((data) => data.json())
-        .then((user) => {
-          if (user.email) {
-            loadUser(user);
-            onRouteChange("home");
-          }
-        })
-        .catch((err) => console.log);
-    }
-  };
-
-  const loadUser = (data: IUser): void => {
-    setUser((prevState: IUser): IUser => {
-      return {
-        ...prevState,
-        id: data.id,
-        name: data.name,
-        age: data.age || "",
-        pet: data.pet || "",
-        email: data.email,
-        entries: data.entries,
-        joined: data.joined,
-      };
-    });
-  };
+  }, [stage, setLoading]);
 
   // A bug of typescript, the map raises an union error. forced to use *any* ↓
   const calculateFaceLocation = (data: Array<ICalculateFaceLocation>): any => {
     if (data !== undefined || typeof data["id"] === "number") {
       return data.map((face: ICalculateFaceLocation) => {
         const clarifaiFace = face.region_info.bounding_box;
-        let image = document.getElementById("inputimage");
+        let image = document.getElementById(
+          "inputimage"
+        ) as HTMLImageElement | null;
+
         if (image !== null) {
           const width = Number(image.offsetWidth);
           const height = Number(image.offsetHeight);
+          console.log({ width, height });
           return {
             leftCol: clarifaiFace.left_col * width,
             topRow: clarifaiFace.top_row * height,
@@ -197,8 +228,10 @@ const App = () => {
     }
   };
 
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value);
+  const onInputChange = (formInputUrl: string) => {
+    setInput(formInputUrl);
+    setImageUrl(formInputUrl);
+    displayFaceBox([]);
   };
 
   const onButtonSubmit = () => {
@@ -206,7 +239,7 @@ const App = () => {
       setSubmitTimeout(false);
       setTimeout(() => setSubmitTimeout(true), 3000);
       if (input !== "") {
-        fetch(`http://${stage}/imageurl`, {
+        fetch(`http://localhost:5000/imageurl`, {
           method: "post",
           headers: {
             "Content-Type": "application/json",
@@ -227,7 +260,7 @@ const App = () => {
             }
             if (response && response.status.code !== "10000") {
               setImageUrl(() => input);
-              fetch(`http://${stage}/image`, {
+              fetch(`http://localhost:5000/image`, {
                 method: "put",
                 headers: {
                   "Content-Type": "application/json",
@@ -268,29 +301,17 @@ const App = () => {
     }
   };
 
-  const onRouteChange = (route: string): void => {
-    if (route === "signout") {
-      window.sessionStorage.removeItem("SmartBrainToken");
-      initialState();
-    } else if (route === "home") {
-      setIsSignedIn(() => true);
-    } else if (route === "faceDetection") {
-      setRoute("faceDetection");
-    }
-    setRoute(() => route);
-  };
-
   const toggleModal = (): void => {
     setIsProfileOpen((prevState) => !prevState);
   };
 
   return (
     <div className="App">
-      <Particles className="particles" params={particlesOptions} />
       <Navigation
         isSignedIn={isSignedIn}
         onRouteChange={onRouteChange}
         toggleModal={toggleModal}
+        StyleTheme={StyleTheme}
       />
       {isProfileOpen && (
         <Modal>
@@ -303,10 +324,10 @@ const App = () => {
         </Modal>
       )}
       {route === "home" ? (
-        <div id="LogoComponent">
+        <div id="LogoComponent" className="z-1 relative">
           <Logo
             image={faceDetectPic}
-            context={"Face Recognition"}
+            context={"Face Detection"}
             onRouteChangeObj={{
               onRouteChange: onRouteChange,
               route: "faceDetection",
@@ -319,10 +340,15 @@ const App = () => {
           />
         </div>
       ) : route === "faceDetection" ? (
-        <div>
+        <div className="face_detection z-1 relative">
           <Rank name={user.name} entries={user.entries} />
           {imageUrl ? (
-            <FaceRecognition boxes={boxes} imageUrl={imageUrl} stage={stage} />
+            <FaceRecognition
+              boxes={boxes}
+              imageUrl={imageUrl}
+              stage={stage}
+              setLoaded={setLoaded}
+            />
           ) : null}
           <ImageLinkForm
             onInputChange={onInputChange}
@@ -342,6 +368,7 @@ const App = () => {
       ) : (
         <Register fetchProfile={fetchProfile} stage={stage} />
       )}
+      <Particles className="particles" params={particlesOptions} />
     </div>
   );
 };

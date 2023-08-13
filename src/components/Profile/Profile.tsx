@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import PropTypes, { number } from "prop-types";
+import PropTypes from "prop-types";
 import "./Profile.css";
 
 interface IProfileProps {
@@ -93,12 +93,11 @@ const Profile: React.FC<IProfileProps> = ({
   return (
     <div className="profile-modal">
       <article className="overflow-y-auto ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 center">
+        <i id="profile_avatar" className="fa-solid fa-user b--black-10"></i>
+        <div onClick={toggleModal} className="modal-close">
+          &times;
+        </div>
         <main className="pa4  w-80">
-          <img
-            src="http://tachyons.io/img/logo.jpg"
-            className="dib h3 w3"
-            alt="avatar"
-          />
           <h1>{ProState.name || name}</h1>
           <h4>{`Image submitted: ${user.entries}`}</h4>
           <p>{`Member since: ${new Date(
@@ -161,26 +160,23 @@ const Profile: React.FC<IProfileProps> = ({
           />
 
           <div
-            className="mt4 pa2"
-            style={{ display: "flex", justifyContent: "space-around" }}
+            className="mt4"
+            style={{ display: "flex", justifyContent: "space-between" }}
           >
             <button
               onClick={() => onProfileSave(ProState)}
-              className="b pa2 grow pointer hover-white w-40 bg-light-red b--black-20"
+              className="profile_btn b pa2 grow pointer hover-white w-40 b--black-20"
             >
               Save
             </button>
             <button
-              className="b pa2 grow pointer hover-white w-40 bg-light-blue b--black-20"
+              className="profile_btn b pa2 grow pointer hover-white w-40  b--black-20"
               onClick={toggleModal}
             >
               Cancel
             </button>
           </div>
         </main>
-        <div onClick={toggleModal} className="modal-close">
-          &times;
-        </div>
       </article>
     </div>
   );

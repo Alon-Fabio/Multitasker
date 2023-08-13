@@ -44,7 +44,7 @@ const Register: React.FC<{
   };
 
   return (
-    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
+    <article className="z-1 relative br3 ba b--black-10 mv4 h-auto w-100 w-50-m w-25-l mw6 shadow-5 center">
       <main className="pa4">
         <form
           id="registerForm"

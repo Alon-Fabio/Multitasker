@@ -1,5 +1,5 @@
-import React, { useReducer } from "react";
-import PropTypes, { string } from "prop-types";
+import React, { useReducer, useState } from "react";
+import PropTypes from "prop-types";
 
 interface ISigProps {
   fetchProfile(token: string, id: number | null): void;
@@ -21,6 +21,8 @@ const Signin: React.FC<ISigProps> = ({
   onRouteChange,
   stage,
 }) => {
+  const [SigninErr, setSigninErr] = useState(false);
+
   const signInReducer = (
     signInState: ISgnRedState,
     { type, payload }: ISigRedAction
@@ -61,13 +63,18 @@ const Signin: React.FC<ISigProps> = ({
         if (data.userId && data.success === "true") {
           saveAuthTokenInSessions(data.token);
           fetchProfile(data.token, data.userId);
+          setSigninErr(false);
+        }
+        if (data === "signinAuthentication") {
+          console.log(data, "Wrong pass or mail");
+          setSigninErr(true);
         }
       })
       .catch(console.log);
   };
 
   return (
-    <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
+    <article className="br3 z-1 relative -1 ba b--black-10 mv4 h-auto w-100 w-50-m w-25-l mw6 shadow-5 center">
       <main className="pa4">
         <form className="measure">
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
@@ -108,6 +115,7 @@ const Signin: React.FC<ISigProps> = ({
                 }
               />
             </div>
+            {SigninErr && <p className="error">Wrong info, please try again</p>}
           </fieldset>
           <div className="">
             <input

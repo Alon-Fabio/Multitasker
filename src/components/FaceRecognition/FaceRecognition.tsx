@@ -18,32 +18,24 @@ interface IBoxMap {
   bottomRow: number;
 }
 
-
-const FaceRecognition: React.FC<{ imageUrl: string; boxes: any; stage: string }> = ({
-  imageUrl,
-  boxes,
-}): JSX.Element => {
- 
+const FaceRecognition: React.FC<{
+  imageUrl: string;
+  boxes: any;
+  stage: string;
+  setLoaded: (b: boolean) => void;
+}> = ({ imageUrl, boxes, setLoaded }): JSX.Element => {
   return (
-    <div >
-    <div className="center">
-    <img className="ma2"
-          alt=""
-          id="inputimage"
-          src={imageUrl}
-          width="500px"
-          height="auto"
-        />
-      <div className="ma2 absolute block">
-        <img
-          id="inputimage"
-          alt=""
-          src={imageUrl}
-          width="500px"
-          height="auto"
-        />
-        {boxes.map(
-          (box: IBoxMap, i: number): JSX.Element => {
+    <div>
+      <div className="center">
+        <div className="pa2 relative block">
+          <img
+            onLoad={() => setLoaded(true)}
+            id="inputimage"
+            alt=""
+            src={imageUrl}
+            height={"max-content"}
+          />
+          {boxes.map((box: IBoxMap, i: number): JSX.Element => {
             return (
               <div
                 key={i}
@@ -56,10 +48,9 @@ const FaceRecognition: React.FC<{ imageUrl: string; boxes: any; stage: string }>
                 }}
               ></div>
             );
-          }
-        )}
+          })}
+        </div>
       </div>
-    </div>
     </div>
   );
 };
@@ -74,7 +65,7 @@ FaceRecognition.propTypes = {
       bottomRow: PropTypes.number.isRequired,
     }).isRequired
   ).isRequired,
-  stage: PropTypes.string.isRequired
+  stage: PropTypes.string.isRequired,
 };
 
 export default FaceRecognition;
