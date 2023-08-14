@@ -14,7 +14,7 @@ import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (false) {
+if (true) {
   var stageOfBuild = {
     route: "44.204.229.83",
     startPoint: "signin",
@@ -239,7 +239,7 @@ const App = () => {
       setSubmitTimeout(false);
       setTimeout(() => setSubmitTimeout(true), 3000);
       if (input !== "") {
-        fetch(`http://localhost:5000/imageurl`, {
+        fetch(`http://${stage}/imageurl`, {
           method: "post",
           headers: {
             "Content-Type": "application/json",
@@ -260,7 +260,7 @@ const App = () => {
             }
             if (response && response.status.code !== "10000") {
               setImageUrl(() => input);
-              fetch(`http://localhost:5000/image`, {
+              fetch(`http://${stage}/image`, {
                 method: "put",
                 headers: {
                   "Content-Type": "application/json",
