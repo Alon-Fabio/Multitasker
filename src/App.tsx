@@ -16,7 +16,8 @@ import graphPic from "./Style/images/graph.png";
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
 if (true) {
   var stageOfBuild = {
-    route: "44.204.229.83",
+    // route: "44.204.229.83",
+    route: "multitasker.alonfabio.com",
     startPoint: "signin",
   };
 } else {
@@ -155,7 +156,7 @@ const App = () => {
 
   const fetchProfile = (token: string, id: number | null): void => {
     if (id !== null && id !== undefined) {
-      fetch(`http://${stage}/profile/${id.toString()}`, {
+      fetch(`https://${stage}/profile/${id.toString()}`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -177,7 +178,7 @@ const App = () => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
     if (token) {
       setLoading(() => true);
-      fetch(`http://${stage}/signin`, {
+      fetch(`https://${stage}/signin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -239,7 +240,7 @@ const App = () => {
       setSubmitTimeout(false);
       setTimeout(() => setSubmitTimeout(true), 3000);
       if (input !== "") {
-        fetch(`http://${stage}/imageurl`, {
+        fetch(`https://${stage}/imageurl`, {
           method: "post",
           headers: {
             "Content-Type": "application/json",
@@ -260,7 +261,7 @@ const App = () => {
             }
             if (response && response.status.code !== "10000") {
               setImageUrl(() => input);
-              fetch(`http://${stage}/image`, {
+              fetch(`https://${stage}/image`, {
                 method: "put",
                 headers: {
                   "Content-Type": "application/json",

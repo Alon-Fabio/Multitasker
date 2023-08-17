@@ -28,7 +28,7 @@ const Register: React.FC<{
   const onSubmitSignIn = (formData: IInputs) => {
     // Enter validation here
     if (formData.password !== "" && formData.email !== "") {
-      fetch(`http://${stage}/register`, {
+      fetch(`https://${stage}/register`, {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

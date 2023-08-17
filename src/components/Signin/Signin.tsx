@@ -53,7 +53,7 @@ const Signin: React.FC<ISigProps> = ({
     event: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
     event.preventDefault();
-    fetch(`http://${stage}/signin`, {
+    fetch(`https://${stage}/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(signInState),

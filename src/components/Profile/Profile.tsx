@@ -69,7 +69,7 @@ const Profile: React.FC<IProfileProps> = ({
   });
 
   const onProfileSave = (data: IProState) => {
-    fetch(`http://${stage}/profile/${id}`, {
+    fetch(`https://${stage}/profile/${id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
