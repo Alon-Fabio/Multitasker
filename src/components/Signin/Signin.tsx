@@ -11,10 +11,6 @@ interface ISgnRedState {
   email: string;
   password: string;
 }
-interface ISigRedAction {
-  type: "CHANGE_PASS" | "CHANGE_EMAIL";
-  payload: string;
-}
 
 const Signin: React.FC<ISigProps> = ({
   fetchProfile,
@@ -22,41 +18,22 @@ const Signin: React.FC<ISigProps> = ({
   stage,
 }) => {
   const [SigninErr, setSigninErr] = useState(false);
-
-  const signInReducer = (
-    signInState: ISgnRedState,
-    { type, payload }: ISigRedAction
-  ): ISgnRedState => {
-    // signInState === {signInEmail: string,signInPassword:string}
-    // action === {type: "CHANGE_EMAIL" || "CHANGE_PASS", payload:string}
-
-    switch (type) {
-      case "CHANGE_EMAIL":
-        return { ...signInState, email: payload };
-      case "CHANGE_PASS":
-        return { ...signInState, password: payload };
-      default:
-        console.error(new Error("FormReducer type is not valid"));
-        return signInState;
-    }
-  };
-  const [signInState, signInDispatch] = useReducer(signInReducer, {
-    email: "",
-    password: "",
-  });
+  const [password, setSigninPass] = useState("");
+  const [email, setSigninEmail] = useState("");
 
   const saveAuthTokenInSessions = (token: string) => {
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
 
   const onSubmitSignIn = (
-    event: React.MouseEvent<HTMLInputElement, MouseEvent>
+    event: React.MouseEvent<HTMLInputElement, MouseEvent>,
+    state?: ISgnRedState
   ) => {
     event.preventDefault();
     fetch(`https://${stage}/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(signInState),
+      body: JSON.stringify(state && { email, password }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -70,11 +47,11 @@ const Signin: React.FC<ISigProps> = ({
           setSigninErr(true);
         }
       })
-      .catch(console.log);
+      .catch(console.error);
   };
 
   return (
-    <article className="br3 z-1 relative -1 ba b--black-10 mv4 h-auto w-100 w-50-m w-25-l mw6 shadow-5 center">
+    <article className="tl br3 z-1 relative -1 ba b--black-10 mv4 h-auto w-100 w-50-m w-25-l mw6 shadow-5 center">
       <main className="pa4">
         <form className="measure">
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
@@ -89,12 +66,7 @@ const Signin: React.FC<ISigProps> = ({
                 autoComplete="email"
                 name="email"
                 id="email"
-                onChange={(event) =>
-                  signInDispatch({
-                    type: "CHANGE_EMAIL",
-                    payload: event.target.value,
-                  })
-                }
+                onChange={(event) => setSigninEmail(event.target.value)}
               />
             </div>
             <div className="mv3">
@@ -107,23 +79,33 @@ const Signin: React.FC<ISigProps> = ({
                 autoComplete="current-password"
                 name="password"
                 id="password"
-                onChange={(event) =>
-                  signInDispatch({
-                    type: "CHANGE_PASS",
-                    payload: event.target.value,
-                  })
-                }
+                onChange={(event) => setSigninPass(event.target.value)}
               />
             </div>
             {SigninErr && <p className="error">Wrong info, please try again</p>}
           </fieldset>
-          <div className="">
-            <input
-              onClick={(event) => onSubmitSignIn(event)}
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-signin"
-              type="submit"
-              value="Sign in"
-            />
+          <div className="flex justify-between">
+            <div className="">
+              <input
+                onClick={(event) => onSubmitSignIn(event)}
+                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-signin"
+                type="submit"
+                value="Sign in"
+              />
+            </div>
+            <div className="">
+              <input
+                onClick={(event) =>
+                  onSubmitSignIn(event, {
+                    email: "demo@alonfabio.com",
+                    password: "Demo!234",
+                  })
+                }
+                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-signin"
+                type="submit"
+                value="Demo"
+              />
+            </div>
           </div>
           <div className="lh-copy mt3">
             <p

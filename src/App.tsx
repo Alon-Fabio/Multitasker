@@ -19,11 +19,13 @@ if (true) {
     // route: "44.204.229.83",
     route: "multitasker.alonfabio.com",
     startPoint: "signin",
+    isSignedIn: false,
   };
 } else {
   stageOfBuild = {
     route: "localhost",
     startPoint: "faceDetection",
+    isSignedIn: true,
     // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
 }
@@ -95,7 +97,7 @@ const App = () => {
 
   const [stage] = useState(stageOfBuild.route);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(stageOfBuild.isSignedIn);
   const [loading, setLoading] = useState(false);
   const [route, setRoute] = useState(stageOfBuild.startPoint);
   const [boxes, setBoxes] = useState<IBoxMap[]>([]);
@@ -197,7 +199,8 @@ const App = () => {
     } else {
       setLoading(() => false);
     }
-  }, [stage, setLoading]);
+  }, []);
+  // }, [stage, setLoading]);
 
   // A bug of typescript, the map raises an union error. forced to use *any* ↓
   const calculateFaceLocation = (data: Array<ICalculateFaceLocation>): any => {
@@ -314,16 +317,21 @@ const App = () => {
         toggleModal={toggleModal}
         StyleTheme={StyleTheme}
       />
-      {isProfileOpen && (
-        <Modal>
-          <Profile
-            loadUser={loadUser}
-            toggleModal={toggleModal}
-            user={user}
-            stage={stage}
-          />
-        </Modal>
-      )}
+      {/* {isProfileOpen && (
+        <Modal> */}
+      <Modal
+        showModal={isProfileOpen}
+        setShowModal={setIsProfileOpen}
+        clickOutSide
+      >
+        <Profile
+          loadUser={loadUser}
+          toggleModal={toggleModal}
+          user={user}
+          stage={stage}
+        />
+      </Modal>
+      {/* )} */}
       {route === "home" ? (
         <div id="LogoComponent" className="z-1 relative">
           <Logo
@@ -367,7 +375,11 @@ const App = () => {
           />
         )
       ) : (
-        <Register fetchProfile={fetchProfile} stage={stage} />
+        <Register
+          fetchProfile={fetchProfile}
+          onRouteChange={onRouteChange}
+          stage={stage}
+        />
       )}
       <Particles className="particles" params={particlesOptions} />
     </div>

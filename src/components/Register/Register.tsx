@@ -10,8 +10,9 @@ interface IInputs {
 
 const Register: React.FC<{
   fetchProfile(token: string, id: number | null): void;
+  onRouteChange(route: string): void;
   stage: string;
-}> = ({ fetchProfile, stage }) => {
+}> = ({ fetchProfile, onRouteChange, stage }) => {
   useEffect(() => {
     const cancelCourse = () => {
       (document.getElementById("registerForm") as HTMLFormElement).reset();
@@ -44,7 +45,7 @@ const Register: React.FC<{
   };
 
   return (
-    <article className="z-1 relative br3 ba b--black-10 mv4 h-auto w-100 w-50-m w-25-l mw6 shadow-5 center">
+    <article className="tl z-1 relative br3 ba b--black-10 mv4 h-auto w-100 w-50-m w-25-l mw6 shadow-5 center">
       <main className="pa4">
         <form
           id="registerForm"
@@ -106,6 +107,14 @@ const Register: React.FC<{
               type="submit"
               value="Register"
             />
+          </div>
+          <div className="lh-copy mt3">
+            <p
+              onClick={() => onRouteChange("signin")}
+              className="f6 link dim db pointer"
+            >
+              Sign in
+            </p>
           </div>
         </form>
       </main>

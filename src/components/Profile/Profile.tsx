@@ -45,8 +45,7 @@ const Profile: React.FC<IProfileProps> = ({
       case "NAME_CHANGE":
         return { ...ProState, name: action.payload };
       case "AGE_CHANGE":
-        // @ts-ignore
-        if (isNaN(action.payload) === false) {
+        if (typeof action.payload === "number") {
           setAgeError(false);
           return { ...ProState, age: action.payload };
         } else {
