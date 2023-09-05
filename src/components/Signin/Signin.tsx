@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 interface ISigProps {
@@ -61,7 +61,7 @@ const Signin: React.FC<ISigProps> = ({
                 Email
               </label>
               <input
-                className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="white pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
                 autoComplete="email"
                 name="email"
@@ -74,7 +74,7 @@ const Signin: React.FC<ISigProps> = ({
                 Password
               </label>
               <input
-                className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="white b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="password"
                 autoComplete="current-password"
                 name="password"
@@ -98,7 +98,7 @@ const Signin: React.FC<ISigProps> = ({
                 onClick={(event) =>
                   onSubmitSignIn(event, {
                     email: "demo@alonfabio.com",
-                    password: "Demo!234",
+                    password: "Demo!2345",
                   })
                 }
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-signin"

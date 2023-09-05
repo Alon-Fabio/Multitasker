@@ -4,7 +4,7 @@ import "./Profile.css";
 
 interface IProfileProps {
   user: {
-    id: null | number;
+    id?: null | number;
     name: string;
     email: string;
     entries: string;
@@ -185,7 +185,7 @@ Profile.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   loadUser: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.number,
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     entries: PropTypes.string.isRequired,

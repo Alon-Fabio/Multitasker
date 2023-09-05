@@ -59,7 +59,8 @@ const Register: React.FC<{
                 Name
               </label>
               <input
-                className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="white pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                // className="color-gray"
                 type="text"
                 name="name"
                 autoComplete="name"
@@ -77,7 +78,7 @@ const Register: React.FC<{
                 Email
               </label>
               <input
-                className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="white pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="email"
                 autoComplete="email"
                 name="email"
@@ -90,7 +91,7 @@ const Register: React.FC<{
                 Password
               </label>
               <input
-                className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                className="white b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                 type="password"
                 name="password"
                 autoComplete="new-password"
