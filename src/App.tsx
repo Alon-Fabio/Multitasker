@@ -14,7 +14,7 @@ import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (false) {
+if (true) {
   var stageOfBuild = {
     // route: "44.204.229.83",
     route: "https://multitasker.alonfabio.com",

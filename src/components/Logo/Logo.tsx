@@ -1,5 +1,5 @@
 import React from "react";
-import Tilt from "react-tilt";
+import { Tilt } from "react-tilt";
 import "./Logo.css";
 
 /// <reference path="./types.d.ts"/>
@@ -22,6 +22,7 @@ const Logo: React.FC<ILogoProps> = ({ image, context, onRouteChangeObj }) => {
       }
     >
       <h1>{context}</h1>
+
       <Tilt className="Tilt br4" options={{ max: -5, scale: 1.1, speed: 8000 }}>
         <div className="Tilt-inner pa3">
           <img alt="logo" src={image} />
