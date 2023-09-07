@@ -29,7 +29,7 @@ const Register: React.FC<{
     console.log(formData);
     // Enter validation here
     if (formData.password !== "" && formData.email !== "") {
-      fetch(`https://${stage}/register`, {
+      fetch(`${stage}/register`, {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

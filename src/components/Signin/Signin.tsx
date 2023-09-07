@@ -29,11 +29,12 @@ const Signin: React.FC<ISigProps> = ({
     event: React.MouseEvent<HTMLInputElement, MouseEvent>,
     state?: ISgnRedState
   ) => {
+    console.log(state ? state : { email, password });
     event.preventDefault();
-    fetch(`https://${stage}/signin`, {
+    fetch(`${stage}/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(state && { email, password }),
+      body: JSON.stringify(state ? state : { email, password }),
     })
       .then((response) => response.json())
       .then((data) => {

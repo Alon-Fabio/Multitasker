@@ -14,18 +14,18 @@ import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (true) {
+if (false) {
   var stageOfBuild = {
     // route: "44.204.229.83",
-    route: "multitasker.alonfabio.com",
+    route: "https://multitasker.alonfabio.com",
     startPoint: "signin",
     isSignedIn: false,
   };
 } else {
   stageOfBuild = {
-    route: "localhost",
-    startPoint: "faceDetection",
-    isSignedIn: true,
+    route: "http://localhost",
+    startPoint: "signin",
+    isSignedIn: false,
     // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
 }
@@ -158,7 +158,7 @@ const App = () => {
 
   const fetchProfile = (token: string, id: number | null): void => {
     if (id !== null && id !== undefined) {
-      fetch(`https://${stage}/profile/${id.toString()}`, {
+      fetch(`${stage}/profile/${id.toString()}`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -180,7 +180,7 @@ const App = () => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
     if (token) {
       setLoading(() => true);
-      fetch(`https://${stage}/signin`, {
+      fetch(`${stage}/signin`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -243,7 +243,7 @@ const App = () => {
       setSubmitTimeout(false);
       setTimeout(() => setSubmitTimeout(true), 3000);
       if (input !== "") {
-        fetch(`https://${stage}/imageurl`, {
+        fetch(`${stage}/imageurl`, {
           method: "post",
           headers: {
             "Content-Type": "application/json",
@@ -264,7 +264,7 @@ const App = () => {
             }
             if (response && response.status.code !== "10000") {
               setImageUrl(() => input);
-              fetch(`https://${stage}/image`, {
+              fetch(`${stage}/image`, {
                 method: "put",
                 headers: {
                   "Content-Type": "application/json",
