@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 import "./Profile.css";
 
@@ -34,8 +34,11 @@ const Profile: React.FC<IProfileProps> = ({
   loadUser,
   stage,
 }) => {
-  const [ageError, setAgeError] = useState(false);
   const { id, name, age, pet } = user;
+  const today = new Date();
+  const isBirthday = today
+    .toISOString()
+    .slice(0, today.toISOString().indexOf("T"));
 
   const formReducer: React.Reducer<IProState, IProAction> = (
     ProState,
@@ -43,17 +46,12 @@ const Profile: React.FC<IProfileProps> = ({
   ) => {
     switch (action.type) {
       case "NAME_CHANGE":
-        return { ...ProState, name: action.payload };
+        if (action.payload.length > 1)
+          return { ...ProState, name: action.payload };
+        return { ...ProState, name: user.name };
       case "AGE_CHANGE":
-        if (typeof action.payload === "number") {
-          setAgeError(false);
-          return { ...ProState, age: action.payload };
-        } else {
-          if (!ageError) {
-            setAgeError(true);
-          }
-        }
-        return ProState;
+        return { ...ProState, age: action.payload };
+
       case "PET_CHANGE":
         return { ...ProState, pet: action.payload };
       default:
@@ -86,9 +84,9 @@ const Profile: React.FC<IProfileProps> = ({
         }
       })
 
-      .catch(console.log);
+      .catch(console.error);
   };
-
+  console.log(user.age);
   return (
     <div className="profile-modal">
       <article className="overflow-y-auto ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 center">
@@ -97,11 +95,13 @@ const Profile: React.FC<IProfileProps> = ({
           &times;
         </div>
         <main className="pa4  w-80">
-          <h1>{ProState.name || name}</h1>
+          <h1>{user.name || ProState.name || name}</h1>
           <h4>{`Image submitted: ${user.entries}`}</h4>
           <p>{`Member since: ${new Date(
             user.joined || "Who are you?"
           ).toLocaleDateString()}`}</p>
+          <p>Date of birth: {user.age?.split(/-/).reverse().join("/")}</p>
+          <p>{user.age === isBirthday ? "Happy birthday!" : ""}</p>
           <hr />
 
           <label className="mt2 fw6" htmlFor="user-name">
@@ -121,14 +121,15 @@ const Profile: React.FC<IProfileProps> = ({
             }
           />
           <label className="mt2 fw6" htmlFor="user-age">
-            Age:
+            Date of birth:
           </label>
           <input
             className="pa2 ba w-100"
             placeholder={age || "immortal!"}
-            type="text"
+            type="date"
             name="user-age"
             id="age"
+            max="2018-12-31"
             onChange={(event) =>
               dispatch({
                 type: "AGE_CHANGE",
@@ -136,11 +137,7 @@ const Profile: React.FC<IProfileProps> = ({
               })
             }
           />
-          {ageError ? (
-            <p className="alert alert-warning">Age needs to be a number</p>
-          ) : (
-            <p></p>
-          )}
+
           <label className="mt2 fw6" htmlFor="pet-name">
             Pet:
           </label>

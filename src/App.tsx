@@ -12,9 +12,10 @@ import Profile from "./components/Profile/Profile";
 import "./App.css";
 import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
+import { ClickEvent } from "tsparticles/dist/Options/Classes/Interactivity/Events/ClickEvent";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (true) {
+if (false) {
   var stageOfBuild = {
     // route: "44.204.229.83",
     route: "https://multitasker.alonfabio.com",
@@ -99,7 +100,14 @@ const App = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(stageOfBuild.isSignedIn);
   const [loading, setLoading] = useState(false);
-  const [route, setRoute] = useState(stageOfBuild.startPoint);
+  const [route, setRoute] = useState<string>(() => {
+    const routePersis = window.sessionStorage.getItem("SmartBrainRoute");
+
+    if (routePersis) {
+      return routePersis;
+    }
+    return "";
+  });
   const [boxes, setBoxes] = useState<IBoxMap[]>([]);
   const [imageUrl, setImageUrl] = useState("");
   const [input, setInput] = useState("");
@@ -147,12 +155,16 @@ const App = () => {
   const onRouteChange = (route: string): void => {
     if (route === "signout") {
       window.sessionStorage.removeItem("SmartBrainToken");
+      window.sessionStorage.removeItem("SmartBrainRoute");
       initialState();
     } else if (route === "home") {
       setIsSignedIn(() => true);
+      window.sessionStorage.setItem("SmartBrainRoute", route);
     } else if (route === "faceDetection") {
       setRoute("faceDetection");
+      window.sessionStorage.setItem("SmartBrainRoute", route);
     }
+
     setRoute(() => route);
   };
 
@@ -169,15 +181,23 @@ const App = () => {
         .then((user) => {
           if (user.email) {
             loadUser(user);
-            onRouteChange("home");
+            const routePersis =
+              window.sessionStorage.getItem("SmartBrainRoute");
+            setIsSignedIn(true);
+            if (routePersis && route !== "signin") {
+              onRouteChange(routePersis);
+            } else {
+              onRouteChange("home");
+            }
           }
         })
-        .catch((err) => console.log);
+        .catch((err) => console.error);
     }
   };
 
   useEffect(() => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
+
     if (token) {
       setLoading(() => true);
       fetch(`${stage}/signin`, {
@@ -195,7 +215,7 @@ const App = () => {
             setLoading(() => false);
           }
         })
-        .catch(console.log);
+        .catch(console.error);
     } else {
       setLoading(() => false);
     }
@@ -214,7 +234,6 @@ const App = () => {
         if (image !== null) {
           const width = Number(image.offsetWidth);
           const height = Number(image.offsetHeight);
-          console.log({ width, height });
           return {
             leftCol: clarifaiFace.left_col * width,
             topRow: clarifaiFace.top_row * height,

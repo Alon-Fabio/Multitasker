@@ -29,7 +29,7 @@ const Signin: React.FC<ISigProps> = ({
     event: React.MouseEvent<HTMLInputElement, MouseEvent>,
     state?: ISgnRedState
   ) => {
-    console.log(state ? state : { email, password });
+    // console.log(state ? state : { email, password });
     event.preventDefault();
     fetch(`${stage}/signin`, {
       method: "post",
@@ -44,7 +44,7 @@ const Signin: React.FC<ISigProps> = ({
           setSigninErr(false);
         }
         if (data === "signinAuthentication") {
-          console.log(data, "Wrong pass or mail");
+          console.error("Wrong pass or mail");
           setSigninErr(true);
         }
       })

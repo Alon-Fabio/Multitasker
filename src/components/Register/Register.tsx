@@ -26,7 +26,6 @@ const Register: React.FC<{
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
   const onSubmitSignIn = (formData: FormValues) => {
-    console.log(formData);
     // Enter validation here
     if (formData.password !== "" && formData.email !== "") {
       fetch(`${stage}/register`, {

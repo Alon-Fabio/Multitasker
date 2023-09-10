@@ -29,7 +29,7 @@ const Rank: React.FC<{
           setEmoji(emoji.input);
         }
       })
-      .catch((err) => console.log);
+      .catch((err) => console.error);
   };
 
   return (
