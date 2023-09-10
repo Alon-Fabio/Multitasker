@@ -12,10 +12,9 @@ import Profile from "./components/Profile/Profile";
 import "./App.css";
 import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
-import { ClickEvent } from "tsparticles/dist/Options/Classes/Interactivity/Events/ClickEvent";
 
 // True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (false) {
+if (true) {
   var stageOfBuild = {
     // route: "44.204.229.83",
     route: "https://multitasker.alonfabio.com",
