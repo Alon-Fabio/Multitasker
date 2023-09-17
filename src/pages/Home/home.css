@@ -1,0 +1,12 @@
+#LogoComponent {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+@media screen and (max-width: 720px) {
+  #LogoComponent {
+    align-items: center;
+    flex-direction: column;
+  }
+}

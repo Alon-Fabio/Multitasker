@@ -38,6 +38,7 @@ const Register: React.FC<{
           if (data) {
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
+            onRouteChange("home");
           }
         })
         .catch(console.error);

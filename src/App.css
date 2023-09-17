@@ -43,24 +43,8 @@ nav {
   color: rgb(195, 223, 248);
 }
 
-#LogoComponent {
-  display: flex;
-  justify-content: space-evenly;
-  align-content: center;
-}
-
-.face_detection {
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
 @media screen and (max-width: 720px) {
   nav {
     justify-content: space-evenly;
-  }
-  #LogoComponent {
-    align-items: center;
-    flex-direction: column;
   }
 }

@@ -86,7 +86,7 @@ const Profile: React.FC<IProfileProps> = ({
 
       .catch(console.error);
   };
-  console.log(user.age);
+
   return (
     <div className="profile-modal">
       <article className="overflow-y-auto ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 center">

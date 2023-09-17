@@ -35,13 +35,13 @@ body::-webkit-scrollbar {
 
 body::-webkit-scrollbar-track {
   background-size: 10px;
-  background-color: #25284b;
+  background-color: #3a1523;
   /* box-shadow: inset 1px 0px 5px black; */
   border: 1px solid #001b44;
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #3a1523;
+  background-color: #25284b;
   border: 1px solid #001b44;
   /* box-shadow: inset 1px 0px 5px black; */
 }
@@ -73,6 +73,10 @@ body::-webkit-scrollbar-button:single-button:vertical:increment {
 
 button {
   cursor: pointer;
+}
+
+.displayNone {
+  display: none;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap");
