@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import "./ImageLinkForm.css";
 
@@ -12,37 +12,47 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
   onButtonSubmit,
 }) => {
   const [ImageUrl, setImageUrl] = useState("");
-  const [Dragged, setDragged] = useState(false);
+  const dragZone = useRef<HTMLDivElement | null>(null);
+  let isDragged = false;
 
-  const handleDragEnter = (dragEvent: React.DragEvent<HTMLDivElement>) => {
-    dragEvent.preventDefault();
-    dragEvent.stopPropagation();
-    // console.log("DragEnter");
-    setDragged(true);
-  };
-
-  const handleDragLeave = (dragEvent: React.DragEvent<HTMLDivElement>) => {
-    dragEvent.preventDefault();
-    dragEvent.stopPropagation();
-    // console.log("DragLeave");
-
-    if (Dragged) {
-      setTimeout(() => setDragged(false), 500);
+  const handleDragEnterOrOver = (
+    dragEvent: React.DragEvent<HTMLDivElement> | MouseEvent
+  ) => {
+    if (!isDragged) {
+      isDragged = true;
+      dragZone.current?.classList.add("drag_drop_zone");
     }
   };
 
-  const handleDragOver = (dragEvent: React.DragEvent<HTMLDivElement>) => {
-    dragEvent.preventDefault();
-    dragEvent.stopPropagation();
-    // console.log("DragOver");
-    if (Dragged!) setDragged(true);
+  useEffect(() => {
+    document
+      .getElementById("body")
+      ?.addEventListener(
+        "dragenter",
+        (event) => handleDragEnterOrOver(event),
+        false
+      );
+    return () => {
+      document
+        .getElementById("body")
+        ?.removeEventListener(
+          "dragenter",
+          (event) => handleDragEnterOrOver(event),
+          false
+        );
+    };
+  });
+
+  const handleDragLeave = (dragEvent: React.DragEvent<HTMLDivElement>) => {
+    isDragged = false;
   };
 
   const handleDrop = (dragEvent: React.DragEvent<HTMLDivElement>) => {
     dragEvent.preventDefault();
     dragEvent.stopPropagation();
-    // console.log("drop");
-    setDragged(false);
+    console.log(dragEvent);
+    dragZone.current?.classList.remove("drag_drop_zone");
+
     let targetElement = dragEvent.dataTransfer.getData("text/html");
     let dragImageSrc = new DOMParser()
       .parseFromString(targetElement, "text/html")
@@ -54,14 +64,16 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
   };
 
   return (
-    <div className="pa2" onDragEnter={(event) => handleDragEnter(event)}>
+    <div className="pa2 ImageLinkForm">
       <div
-        className={Dragged ? "drag-drop-zone" : "hidden"}
         onDrop={(event) => handleDrop(event)}
-        onDragOver={(event) => handleDragOver(event)}
+        onDragOver={(event) => handleDragEnterOrOver(event)}
+        onDragLeave={(event) => handleDrop(event)}
+        ref={dragZone}
+        className={"hidden"}
       >
         {/* <div className={"drag-drop-zone"}> */}
-        <h1>Drag files here to upload</h1>
+        <h1>Drag & drop files here to upload</h1>
       </div>
       <div className="pa3">
         <h2>
@@ -71,27 +83,27 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
         </h2>
         <h2>{"Try pasting in a url of a photo."}</h2>
       </div>
-      <div className="center">
-        <div className="imageForm center pa4 br3 shadow-5">
+      <div className="center flex-column">
+        <div className="imageForm pa4 br3 shadow-5">
           <input
-            className="f4 pa2 w-100 center"
+            className="f4 pa2 br3 w-100 center"
             type="tex"
             onChange={(event) => onInputChange(event.target.value)}
             // value={ImageUrl !== "" && ImageUrl}
             placeholder={ImageUrl !== "" ? ImageUrl : "https//image.jpg/png"}
           />
-          <button
-            className="grow f4 link ph3 pv2 dib white bg-light-purple"
-            onClick={onButtonSubmit}
-          >
-            Detect
-          </button>
         </div>
+        <button
+          className="grow ma3 br3 f4 link ph3 pv2 dib white"
+          onClick={onButtonSubmit}
+        >
+          Detect
+        </button>
       </div>
       {/* <div className="relative"> */}
       <div
-        onDragEnter={(event) => handleDragEnter(event)}
-        onDragOver={(event) => handleDragOver(event)}
+        onDragEnter={(event) => handleDragEnterOrOver(event)}
+        onDragOver={(event) => handleDragEnterOrOver(event)}
         onDragLeave={(event) => handleDragLeave(event)}
         className="drag_detect"
       ></div>

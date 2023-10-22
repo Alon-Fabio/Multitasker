@@ -29,9 +29,10 @@ const FaceRecognition: React.FC<{
       <div className="center">
         <div className="pa2 relative block">
           <img
+            className="br3"
             onLoad={() => setLoaded(true)}
             id="inputimage"
-            alt=""
+            alt="Uploaded image"
             src={imageUrl}
             height={"max-content"}
           />

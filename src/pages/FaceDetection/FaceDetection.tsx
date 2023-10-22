@@ -159,7 +159,7 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
   };
 
   return (
-    <div id="face_detection" className=" z-1 relative">
+    <div id="face_detection" className=" z-1 pa4 relative br4">
       <Rank name={user.name} entries={user.entries} />
 
       <h3>{fetchErr}</h3>

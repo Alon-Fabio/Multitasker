@@ -1,54 +1,60 @@
 .imageForm {
   position: relative;
-  width: 700px;
+  width: clamp(100px, 80vw, 800px);
   background: radial-gradient(
         circle farthest-side at 0% 50%,
-        #fb1 23.5%,
+        #001b44 23.5%,
         rgba(240, 166, 17, 0) 0
       )
       21px 30px,
     radial-gradient(
         circle farthest-side at 0% 50%,
-        #b71 24%,
+        #3a1523 24%,
         rgba(240, 166, 17, 0) 0
       )
       19px 30px,
     linear-gradient(
-        #fb1 14%,
+        #001b44 14%,
         rgba(240, 166, 17, 0) 0,
         rgba(240, 166, 17, 0) 85%,
-        #fb1 0
+        #001b44 0
       )
       0 0,
     linear-gradient(
         150deg,
-        #fb1 24%,
-        #b71 0,
-        #b71 26%,
+        #001b44 24%,
+        #3a1523 0,
+        #3a1523 26%,
         rgba(240, 166, 17, 0) 0,
         rgba(240, 166, 17, 0) 74%,
-        #b71 0,
-        #b71 76%,
-        #fb1 0
+        #3a1523 0,
+        #3a1523 76%,
+        #001b44 0
       )
       0 0,
     linear-gradient(
         30deg,
-        #fb1 24%,
-        #b71 0,
-        #b71 26%,
+        #001b44 24%,
+        #3a1523 0,
+        #3a1523 26%,
         rgba(240, 166, 17, 0) 0,
         rgba(240, 166, 17, 0) 74%,
-        #b71 0,
-        #b71 76%,
-        #fb1 0
+        #3a1523 0,
+        #3a1523 76%,
+        #001b44 0
       )
       0 0,
-    linear-gradient(90deg, #b71 2%, #fb1 0, #fb1 98%, #b71 0%) 0 0 #fb1;
+    linear-gradient(90deg, #3a1523 2%, #001b44 0, #001b44 98%, #3a1523 0%) 0 0
+      #001b44;
   background-size: 40px 60px;
 }
 
-.drag-drop-zone {
+button {
+  background-color: #3a1523;
+  border-color: #001b44;
+}
+.drag_drop_zone {
+  display: block;
   position: fixed;
   color: black;
   font-weight: bold;
@@ -58,6 +64,7 @@
   border: 5px dotted gray;
   /* filter: blur(20px); */
   backdrop-filter: blur(5px);
+  z-index: 10;
 }
 .drag_detect {
   position: fixed;

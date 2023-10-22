@@ -24,8 +24,8 @@ if (false) {
 } else {
   stageOfBuild = {
     back: "http://localhost",
-    startPoint: "faceDetection",
-    isSignedIn: true,
+    startPoint: "signin",
+    isSignedIn: false,
     // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
 }
@@ -48,6 +48,7 @@ const particlesOptions = {
     },
   },
 };
+
 interface IUser {
   id: null | number;
   name: string | "";
@@ -207,19 +208,6 @@ const App = () => {
         StyleTheme={StyleTheme}
       />
 
-      <Modal
-        showModal={isProfileOpen}
-        setShowModal={setIsProfileOpen}
-        clickOutSide
-      >
-        <Profile
-          loadUser={loadUser}
-          toggleModal={toggleModal}
-          user={user}
-          stage={stage}
-        />
-      </Modal>
-
       {route === "home" ? (
         <Home
           onRouteChange={onRouteChange}
@@ -250,6 +238,18 @@ const App = () => {
         />
       )}
       <Particles className="particles" params={particlesOptions} />
+      <Modal
+        showModal={isProfileOpen}
+        setShowModal={setIsProfileOpen}
+        clickOutSide
+      >
+        <Profile
+          loadUser={loadUser}
+          toggleModal={toggleModal}
+          user={user}
+          stage={stage}
+        />
+      </Modal>
     </div>
   );
 };

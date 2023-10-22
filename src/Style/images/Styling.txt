@@ -1,0 +1,5 @@
+colors
+
+Base: #25284b
+Base 2: #001b44
+Accent: #3a1523
