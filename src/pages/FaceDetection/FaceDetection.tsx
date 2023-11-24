@@ -9,7 +9,7 @@ interface IUser {
   id: null | number;
   name: string | "";
   email: string | "";
-  entries: string | "";
+  entries: number;
   joined: string | "";
   age: string | "";
   pet: string | "";
@@ -84,21 +84,108 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
     } else return [data];
   };
 
+  const onButtonSubmit2 = () => {
+    // Check for empty url string.
+    console.log(input.indexOf("/"));
+    if (input === "" || input.indexOf("/") === -1) {
+      setFetchErr(
+        "You need to add a picture's address in the bar under this line."
+      );
+
+      displayFaceBox([]);
+      setImageUrl(
+        "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+      );
+      console.log("Got empty url.");
+      return;
+    }
+    // Brute force gate.
+    if (SubmitTimeout) {
+      setSubmitTimeout(false);
+      setTimeout(() => setSubmitTimeout(true), 3000);
+      // Update user entries.
+      fetch(`${stage}/image`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+          Authentication:
+            window.sessionStorage.getItem("SmartBrainToken") || "",
+        },
+        body: JSON.stringify({
+          id: user.id,
+        }),
+      })
+        .then((response) => response.json())
+        .then((userCount) => {
+          if (Number.isInteger(userCount)) {
+            setUser((prevState) => {
+              return { ...prevState, entries: userCount };
+            });
+
+            console.log("looking for faces");
+            fetch(`${stage}/imageurl`, {
+              method: "post",
+              headers: {
+                "Content-Type": "application/json",
+                Authentication:
+                  window.sessionStorage.getItem("SmartBrainToken") || "",
+              },
+              body: JSON.stringify({
+                input: input,
+              }),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                if (response && response.status.code === undefined) {
+                  setFetchErr("Ops.. Maybe try a different picture");
+
+                  displayFaceBox([]);
+                  setImageUrl(
+                    "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
+                  );
+                }
+                if (response && response.status.code !== "10000") {
+                  setImageUrl(() => input);
+                }
+                FaceDetectionRef.current?.classList.remove("displayNone");
+                displayFaceBox(
+                  calculateFaceLocation(response.outputs[0].data.regions)
+                );
+              })
+              .catch((err) => {
+                if (imageUrl && imageUrl.length > 0) {
+                  setFetchErr("Ops.. Maybe try a different picture");
+                }
+
+                console.error(err);
+              });
+          }
+        })
+        .catch((err) => {
+          setFetchErr("Sorry, you're not logged in. please logout and login.");
+          console.error("Failed to update user with error: ", err);
+        });
+    }
+  };
+
   const onButtonSubmit = () => {
     if (SubmitTimeout) {
       setSubmitTimeout(false);
       setTimeout(() => setSubmitTimeout(true), 3000);
-      if (input === "") {
-        setFetchErr("Ops.. Maybe try a different picture");
+      // Check for empty url string.
+      if (input === "" || input.indexOf("/") === -1) {
+        setFetchErr(
+          "You need to add a picture's address in the bar under this line."
+        );
 
         displayFaceBox([]);
         setImageUrl(
           "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
         );
-        console.log("no string");
+        console.log("Got empty url.");
         return;
       }
-      console.log("fetch");
+      console.log("looking for faces");
       fetch(`${stage}/imageurl`, {
         method: "post",
         headers: {
@@ -112,16 +199,30 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
       })
         .then((response) => response.json())
         .then((response) => {
-          if (response && response.status.code === undefined) {
-            setFetchErr("Ops.. Maybe try a different picture");
-
+          console.log("Clarify data: ", response.faces);
+          // Check for failed response.
+          if (response.success == false) {
+            setFetchErr(
+              "I'm sorry, Something went wrong.. Maybe try a different picture or try again later."
+            );
+            console.log(response.error);
             displayFaceBox([]);
             setImageUrl(
               "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
             );
           }
-          if (response && response.status.code !== "10000") {
+          if (
+            response.faces?.status.code !== "10000" &&
+            response.success == true
+          ) {
+            console.log(
+              "Response.success type: ",
+              typeof response.success,
+              "Val: ",
+              response.success
+            );
             setImageUrl(() => input);
+            // Update user entries.
             fetch(`${stage}/image`, {
               method: "put",
               headers: {
@@ -134,22 +235,34 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
               }),
             })
               .then((response) => response.json())
-              .then((count) => {
-                setUser((prevState) => {
-                  return { ...prevState, entries: count };
-                });
+              .then((userEntries) => {
+                if (Number.isInteger(userEntries)) {
+                  setUser((prevState) => {
+                    return { ...prevState, entries: userEntries };
+                  });
+                } else {
+                  console.log("userEntries type is ", typeof userEntries);
+                  setFetchErr(
+                    "Sorry, you're not logged in. please logout and login."
+                  );
+                }
               })
               .catch((err) => {
-                console.error(err);
+                setFetchErr(
+                  "Sorry, you're not logged in. please logout and login."
+                );
+                console.error("Failed to update user with error: ", err);
               });
+            // Update user entries end.
+
+            FaceDetectionRef.current?.classList.remove("displayNone");
+            displayFaceBox(
+              calculateFaceLocation(response.faces?.outputs[0].data.regions)
+            );
           }
-          FaceDetectionRef.current?.classList.remove("displayNone");
-          displayFaceBox(
-            calculateFaceLocation(response.outputs[0].data.regions)
-          );
         })
         .catch((err) => {
-          if (imageUrl && imageUrl.length > 0) {
+          if (Boolean(imageUrl) && imageUrl.length > 0) {
             setFetchErr("Ops.. Maybe try a different picture");
           }
 
@@ -160,13 +273,13 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
 
   return (
     <div id="face_detection" className=" z-1 pa4 relative br4">
-      <Rank name={user.name} entries={user.entries} />
+      <Rank name={user.name} entries={user.entries?.toString()} />
 
       <h3>{fetchErr}</h3>
       <div ref={FaceDetectionRef}>
         <FaceRecognition
           boxes={boxes}
-          imageUrl={imageUrl}
+          imageUrl={input}
           stage={stage}
           setLoaded={setLoaded}
         />

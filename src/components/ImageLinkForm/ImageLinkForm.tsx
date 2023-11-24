@@ -18,6 +18,8 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
   const handleDragEnterOrOver = (
     dragEvent: React.DragEvent<HTMLDivElement> | MouseEvent
   ) => {
+    dragEvent.preventDefault();
+    dragEvent.stopPropagation();
     if (!isDragged) {
       isDragged = true;
       dragZone.current?.classList.add("drag_drop_zone");
@@ -32,30 +34,32 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
         (event) => handleDragEnterOrOver(event),
         false
       );
+
     return () => {
-      document
-        .getElementById("body")
-        ?.removeEventListener(
-          "dragenter",
-          (event) => handleDragEnterOrOver(event),
-          false
-        );
+      document.removeEventListener(
+        "dragenter",
+        (event) => handleDragEnterOrOver(event),
+        false
+      );
     };
   });
 
   const handleDragLeave = (dragEvent: React.DragEvent<HTMLDivElement>) => {
+    dragEvent.preventDefault();
+    dragEvent.stopPropagation();
     isDragged = false;
   };
 
-  const handleDrop = (dragEvent: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (
+    dragEvent: React.DragEvent<HTMLDivElement> | DragEvent
+  ) => {
     dragEvent.preventDefault();
     dragEvent.stopPropagation();
-    console.log(dragEvent);
     dragZone.current?.classList.remove("drag_drop_zone");
 
-    let targetElement = dragEvent.dataTransfer.getData("text/html");
+    let targetElement = dragEvent.dataTransfer?.getData("text/html");
     let dragImageSrc = new DOMParser()
-      .parseFromString(targetElement, "text/html")
+      .parseFromString(targetElement ? targetElement : "", "text/html")
       .querySelector("img")?.src;
     if (typeof dragImageSrc === "string") {
       onInputChange(dragImageSrc);

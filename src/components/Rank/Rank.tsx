@@ -11,11 +11,12 @@ const Rank: React.FC<{
     if (entries !== undefined) {
       rankEmoji(entries);
     }
+    console.log(entries);
   }, [entries, name]);
 
   const rankEmoji = (entries: string): void => {
     fetch(
-      `https://x12q8i6zkb.execute-api.us-east-1.amazonaws.com/dev/rank?rank=${entries.toString()}`,
+      `https://x12q8i6zkb.execute-api.us-east-1.amazonaws.com/dev/rank?rank=${entries}`,
       {
         method: "GET",
         headers: {

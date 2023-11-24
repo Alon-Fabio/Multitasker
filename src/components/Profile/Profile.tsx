@@ -7,7 +7,7 @@ interface IProfileProps {
     id?: null | number;
     name: string;
     email: string;
-    entries: string;
+    entries: number | null;
     joined: string;
     age?: string;
     pet?: string;
@@ -96,7 +96,7 @@ const Profile: React.FC<IProfileProps> = ({
         </div>
         <main className="pa4  w-80">
           <h1>{user.name || ProState.name || name}</h1>
-          <h4>{`Image submitted: ${user.entries}`}</h4>
+          <h4>{`Image submitted: ${user.entries?.toString()}`}</h4>
           <p>{`Member since: ${new Date(
             user.joined || "Who are you?"
           ).toLocaleDateString()}`}</p>
@@ -185,7 +185,7 @@ Profile.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    entries: PropTypes.string.isRequired,
+    entries: PropTypes.number.isRequired,
     joined: PropTypes.string.isRequired,
     age: PropTypes.string.isRequired,
     pet: PropTypes.string.isRequired,

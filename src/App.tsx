@@ -24,7 +24,7 @@ if (false) {
 } else {
   stageOfBuild = {
     back: "http://localhost",
-    startPoint: "signin",
+    startPoint: "home",
     isSignedIn: false,
     // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
@@ -53,7 +53,7 @@ interface IUser {
   id: null | number;
   name: string | "";
   email: string | "";
-  entries: string | "";
+  entries: number;
   joined: string | "";
   age: string | "";
   pet: string | "";
@@ -64,7 +64,7 @@ const App = () => {
     id: null,
     name: "",
     email: "",
-    entries: "0",
+    entries: 0,
     joined: "",
     age: "",
     pet: "",
@@ -98,7 +98,7 @@ const App = () => {
         id: null,
         name: "",
         email: "",
-        entries: "0",
+        entries: 0,
         joined: "",
         age: "",
         pet: "",
@@ -119,7 +119,7 @@ const App = () => {
         age: data.age || "",
         pet: data.pet || "",
         email: data.email,
-        entries: data.entries,
+        entries: Number(data.entries),
         joined: data.joined,
       };
     });
@@ -135,6 +135,10 @@ const App = () => {
       window.sessionStorage.setItem("SmartBrainRoute", route);
     } else if (route === "faceDetection") {
       setRoute("faceDetection");
+      window.sessionStorage.setItem("SmartBrainRoute", route);
+    } else if (route === "signin") {
+      setRoute("signin");
+
       window.sessionStorage.setItem("SmartBrainRoute", route);
     }
     window.sessionStorage.setItem("SmartBrainRoute", route);
@@ -172,7 +176,8 @@ const App = () => {
   useEffect(() => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
 
-    if (token) {
+    if (token && (user.id === null || typeof user.id !== "number")) {
+      console.log("App, useEffect: Type of id", user.id, typeof user.id);
       setLoading(() => true);
       fetch(`${stage}/signin`, {
         method: "post",
@@ -183,17 +188,20 @@ const App = () => {
       })
         .then((data) => data.json())
         .then((data) => {
+          setLoading(() => false);
           if (data && data.id) {
-            fetchProfile(token, data.id);
+            fetchProfile(token, Number(data.id));
+            onRouteChange("home");
           } else {
-            setLoading(() => false);
+            onRouteChange("sigin");
+            setIsSignedIn(false);
           }
         })
         .catch(console.error);
     } else {
       setLoading(() => false);
     }
-  }, []);
+  }, [user.id]);
 
   const toggleModal = (): void => {
     setIsProfileOpen((prevState) => !prevState);
