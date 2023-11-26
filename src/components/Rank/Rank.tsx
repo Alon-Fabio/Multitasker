@@ -11,7 +11,6 @@ const Rank: React.FC<{
     if (entries !== undefined) {
       rankEmoji(entries);
     }
-    console.log(entries);
   }, [entries, name]);
 
   const rankEmoji = (entries: string): void => {

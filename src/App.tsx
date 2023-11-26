@@ -13,18 +13,18 @@ import graphPic from "./Style/images/graph.png";
 import Home from "./pages/Home/Home";
 import FaceDetection from "./pages/FaceDetection/FaceDetection";
 
-// True for production and false for dev (dev will start at the home screen, and not the signin screen)
-if (false) {
-  var stageOfBuild = {
-    // route: "44.204.229.83", aws ipv4
-    back: "https://multitasker.alonfabio.com",
-    startPoint: "signin",
-    isSignedIn: false,
-  };
-} else {
+const isDev = true;
+var stageOfBuild = {
+  // route: "44.204.229.83", aws ipv4
+  back: "https://multitasker.alonfabio.com",
+  startPoint: "signin",
+  isSignedIn: false,
+};
+
+if (isDev) {
   stageOfBuild = {
     back: "http://localhost",
-    startPoint: "home",
+    startPoint: "signin",
     isSignedIn: false,
     // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
@@ -177,7 +177,8 @@ const App = () => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
 
     if (token && (user.id === null || typeof user.id !== "number")) {
-      console.log("App, useEffect: Type of id", user.id, typeof user.id);
+      isDev &&
+        console.log("App, useEffect: Type of id", user.id, typeof user.id);
       setLoading(() => true);
       fetch(`${stage}/signin`, {
         method: "post",

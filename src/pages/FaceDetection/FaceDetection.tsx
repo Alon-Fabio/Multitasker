@@ -84,91 +84,11 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
     } else return [data];
   };
 
-  const onButtonSubmit2 = () => {
-    // Check for empty url string.
-    console.log(input.indexOf("/"));
-    if (input === "" || input.indexOf("/") === -1) {
-      setFetchErr(
-        "You need to add a picture's address in the bar under this line."
-      );
-
-      displayFaceBox([]);
-      setImageUrl(
-        "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
-      );
-      console.log("Got empty url.");
-      return;
-    }
-    // Brute force gate.
-    if (SubmitTimeout) {
-      setSubmitTimeout(false);
-      setTimeout(() => setSubmitTimeout(true), 3000);
-      // Update user entries.
-      fetch(`${stage}/image`, {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json",
-          Authentication:
-            window.sessionStorage.getItem("SmartBrainToken") || "",
-        },
-        body: JSON.stringify({
-          id: user.id,
-        }),
-      })
-        .then((response) => response.json())
-        .then((userCount) => {
-          if (Number.isInteger(userCount)) {
-            setUser((prevState) => {
-              return { ...prevState, entries: userCount };
-            });
-
-            console.log("looking for faces");
-            fetch(`${stage}/imageurl`, {
-              method: "post",
-              headers: {
-                "Content-Type": "application/json",
-                Authentication:
-                  window.sessionStorage.getItem("SmartBrainToken") || "",
-              },
-              body: JSON.stringify({
-                input: input,
-              }),
-            })
-              .then((response) => response.json())
-              .then((response) => {
-                if (response && response.status.code === undefined) {
-                  setFetchErr("Ops.. Maybe try a different picture");
-
-                  displayFaceBox([]);
-                  setImageUrl(
-                    "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
-                  );
-                }
-                if (response && response.status.code !== "10000") {
-                  setImageUrl(() => input);
-                }
-                FaceDetectionRef.current?.classList.remove("displayNone");
-                displayFaceBox(
-                  calculateFaceLocation(response.outputs[0].data.regions)
-                );
-              })
-              .catch((err) => {
-                if (imageUrl && imageUrl.length > 0) {
-                  setFetchErr("Ops.. Maybe try a different picture");
-                }
-
-                console.error(err);
-              });
-          }
-        })
-        .catch((err) => {
-          setFetchErr("Sorry, you're not logged in. please logout and login.");
-          console.error("Failed to update user with error: ", err);
-        });
-    }
-  };
-
   const onButtonSubmit = () => {
+    const headers = {
+      "Content-Type": "application/json",
+      Authentication: window.sessionStorage.getItem("SmartBrainToken") || "",
+    };
     if (SubmitTimeout) {
       setSubmitTimeout(false);
       setTimeout(() => setSubmitTimeout(true), 3000);
@@ -185,27 +105,23 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
         console.log("Got empty url.");
         return;
       }
-      console.log("looking for faces");
+      console.log("looking for faces...");
       fetch(`${stage}/imageurl`, {
         method: "post",
-        headers: {
-          "Content-Type": "application/json",
-          Authentication:
-            window.sessionStorage.getItem("SmartBrainToken") || "",
-        },
+        headers: headers,
         body: JSON.stringify({
           input: input,
         }),
       })
         .then((response) => response.json())
         .then((response) => {
-          console.log("Clarify data: ", response.faces);
+          // console.log("Clarify data: ", response.faces); Improve ts for this API call.
           // Check for failed response.
           if (response.success == false) {
             setFetchErr(
               "I'm sorry, Something went wrong.. Maybe try a different picture or try again later."
             );
-            console.log(response.error);
+
             displayFaceBox([]);
             setImageUrl(
               "https://64.media.tumblr.com/39152183fc21b80af07e4c8146bc784b/tumblr_noqcsiGNIt1u7zqzwo1_500.gif"
@@ -215,33 +131,24 @@ const FaceDetection: React.FC<IFaceDetection> = ({ user, setUser, stage }) => {
             response.faces?.status.code !== "10000" &&
             response.success == true
           ) {
-            console.log(
-              "Response.success type: ",
-              typeof response.success,
-              "Val: ",
-              response.success
-            );
             setImageUrl(() => input);
             // Update user entries.
             fetch(`${stage}/image`, {
               method: "put",
-              headers: {
-                "Content-Type": "application/json",
-                Authentication:
-                  window.sessionStorage.getItem("SmartBrainToken") || "",
-              },
+              headers: headers,
               body: JSON.stringify({
                 id: user.id,
               }),
             })
               .then((response) => response.json())
               .then((userEntries) => {
-                if (Number.isInteger(userEntries)) {
+                const isEntriesNumber = Number(userEntries);
+
+                if (!Number.isNaN(isEntriesNumber)) {
                   setUser((prevState) => {
-                    return { ...prevState, entries: userEntries };
+                    return { ...prevState, entries: isEntriesNumber };
                   });
                 } else {
-                  console.log("userEntries type is ", typeof userEntries);
                   setFetchErr(
                     "Sorry, you're not logged in. please logout and login."
                   );

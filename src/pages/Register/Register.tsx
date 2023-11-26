@@ -35,9 +35,8 @@ const Register: React.FC<{
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          if (Boolean(data.success)) {
-            console.log("logged in");
+          if (data.success === true) {
+            console.log("You're logged in.");
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
             onRouteChange("home");

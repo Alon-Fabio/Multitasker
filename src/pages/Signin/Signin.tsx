@@ -29,7 +29,6 @@ const Signin: React.FC<ISigProps> = ({
     event: React.MouseEvent<HTMLInputElement, MouseEvent>,
     state?: ISgnRedState
   ) => {
-    // console.log(state ? state : { email, password });
     event.preventDefault();
     fetch(`${stage}/signin`, {
       method: "post",
@@ -38,7 +37,7 @@ const Signin: React.FC<ISigProps> = ({
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.userId && data.success === "true") {
+        if (data.userId && data.success === true) {
           saveAuthTokenInSessions(data.token);
           fetchProfile(data.token, data.userId);
           setSigninErr(false);
