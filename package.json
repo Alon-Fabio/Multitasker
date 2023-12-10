@@ -11,6 +11,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
     "react-particles-js": "^3.3.0",
+    "react-router-dom": "^6.20.1",
     "react-tilt": "^1.0.2",
     "reactstrap": "^8.7.1",
     "tachyons": "^4.12.0",
