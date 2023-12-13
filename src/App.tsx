@@ -143,26 +143,26 @@ const App = () => {
     window.sessionStorage.removeItem("SmartBrainRoute");
     setInitialState();
   };
-  const onRouteChange = (route: string): void => {
-    if (route === "signout") {
-      window.sessionStorage.removeItem("SmartBrainToken");
-      window.sessionStorage.removeItem("SmartBrainRoute");
-      setInitialState();
-    } else if (route === "home") {
-      setIsSignedIn(() => true);
-      window.sessionStorage.setItem("SmartBrainRoute", route);
-    } else if (route === "faceDetection") {
-      setRoute("faceDetection");
-      window.sessionStorage.setItem("SmartBrainRoute", route);
-    } else if (route === "signin") {
-      setRoute("signin");
+  // const onRouteChange = (route: string): void => {
+  //   if (route === "signout") {
+  //     window.sessionStorage.removeItem("SmartBrainToken");
+  //     window.sessionStorage.removeItem("SmartBrainRoute");
+  //     setInitialState();
+  //   } else if (route === "home") {
+  //     setIsSignedIn(() => true);
+  //     window.sessionStorage.setItem("SmartBrainRoute", route);
+  //   } else if (route === "faceDetection") {
+  //     setRoute("faceDetection");
+  //     window.sessionStorage.setItem("SmartBrainRoute", route);
+  //   } else if (route === "signin") {
+  //     setRoute("signin");
 
-      window.sessionStorage.setItem("SmartBrainRoute", route);
-    }
-    window.sessionStorage.setItem("SmartBrainRoute", route);
+  //     window.sessionStorage.setItem("SmartBrainRoute", route);
+  //   }
+  //   window.sessionStorage.setItem("SmartBrainRoute", route);
 
-    setRoute(() => route);
-  };
+  //   setRoute(() => route);
+  // };
 
   const fetchProfile = (token: string, id: number | null): void => {
     if (id !== null && id !== undefined) {
@@ -231,9 +231,9 @@ const App = () => {
           setLoading(() => false);
           if (data && data.id) {
             fetchProfile(token, Number(data.id));
-            onRouteChange("home");
+            navigate("home");
           } else {
-            onRouteChange("sigin");
+            navigate("sigin");
             setIsSignedIn(false);
           }
         })
