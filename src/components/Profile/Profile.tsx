@@ -97,9 +97,7 @@ const Profile: React.FC<IProfileProps> = ({
         <main className="pa4  w-80">
           <h1>{user.name || ProState.name || name}</h1>
           <h4>{`Image submitted: ${user.entries?.toString()}`}</h4>
-          <p>{`Member since: ${new Date(
-            user.joined || "Who are you?"
-          ).toLocaleDateString()}`}</p>
+          <p>{`Member since: ${new Date(user.joined).toLocaleDateString()}`}</p>
           <p>Date of birth: {user.age?.split(/-/).reverse().join("/")}</p>
           <p>{user.age === isBirthday ? "Happy birthday!" : ""}</p>
           <hr />

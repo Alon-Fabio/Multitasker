@@ -7,19 +7,15 @@ import "./Logo.css";
 interface ILogoProps {
   image: string;
   context: string;
-  onRouteChangeObj: {
-    onRouteChange(route: string): void;
-    route: string;
-  };
 }
 
-const Logo: React.FC<ILogoProps> = ({ image, context, onRouteChangeObj }) => {
+const Logo: React.FC<ILogoProps> = ({ image, context }) => {
   return (
     <div
       className="mt4 mb4 mt0 Logo"
-      onClick={(event: React.MouseEvent<HTMLElement>) =>
-        onRouteChangeObj.onRouteChange(onRouteChangeObj.route)
-      }
+      // onClick={(event: React.MouseEvent<HTMLElement>) =>
+      //   onRouteChangeObj.onRouteChange(onRouteChangeObj.route)
+      // }
     >
       <h1>{context}</h1>
 

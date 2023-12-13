@@ -8,12 +8,14 @@ import {
 } from "reactstrap";
 
 interface IProIcoProps {
-  onRouteChange(route: string): void;
+  // onRouteChange(route: string): void;
+  handleSignOut(): void;
   toggleModal(): void;
 }
 
 const ProfileIcon: React.FC<IProIcoProps> = ({
-  onRouteChange,
+  // onRouteChange,
+  handleSignOut,
   toggleModal,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -44,9 +46,7 @@ const ProfileIcon: React.FC<IProIcoProps> = ({
           }}
         >
           <DropdownItem onClick={toggleModal}>Profile</DropdownItem>
-          <DropdownItem onClick={() => onRouteChange("signout")}>
-            Sign Out
-          </DropdownItem>
+          <DropdownItem onClick={handleSignOut}>Sign Out</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
@@ -54,7 +54,8 @@ const ProfileIcon: React.FC<IProIcoProps> = ({
 };
 
 ProfileIcon.propTypes = {
-  onRouteChange: PropTypes.func.isRequired,
+  handleSignOut: PropTypes.func.isRequired,
+
   toggleModal: PropTypes.func.isRequired,
 };
 

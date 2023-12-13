@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 interface ISigProps {
   fetchProfile(token: string, id: number | null): void;
-  onRouteChange(route: string): void;
+  // onRouteChange(route: string): void;
   stage: string;
 }
 
@@ -14,7 +15,7 @@ interface ISgnRedState {
 
 const Signin: React.FC<ISigProps> = ({
   fetchProfile,
-  onRouteChange,
+  // onRouteChange,
   stage,
 }) => {
   const [SigninErr, setSigninErr] = useState(false);
@@ -108,12 +109,9 @@ const Signin: React.FC<ISigProps> = ({
             </div>
           </div>
           <div className="lh-copy mt3">
-            <p
-              onClick={() => onRouteChange("register")}
-              className="f6 link dim db pointer"
-            >
-              Register
-            </p>
+            <Link to="register">
+              <p className="f6 link dim db pointer">Register</p>
+            </Link>
           </div>
         </form>
       </main>
@@ -123,7 +121,7 @@ const Signin: React.FC<ISigProps> = ({
 
 Signin.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
-  onRouteChange: PropTypes.func.isRequired,
+
   stage: PropTypes.string.isRequired,
 };
 

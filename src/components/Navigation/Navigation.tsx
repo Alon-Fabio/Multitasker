@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ProfileIcon from "../Profile/ProfileIcon";
+import { Link } from "react-router-dom";
 
 interface IStyleTheme {
   color: string;
@@ -9,14 +10,16 @@ interface IStyleTheme {
 }
 
 interface NavProps {
-  onRouteChange(route: string): void;
+  // onRouteChange(route: string): void;
+  handleSignOut(): void;
   isSignedIn: boolean;
   toggleModal(): void;
   StyleTheme: IStyleTheme;
 }
 
 const Navigation: React.FC<NavProps> = ({
-  onRouteChange,
+  // onRouteChange,
+  handleSignOut,
   isSignedIn,
   toggleModal,
   StyleTheme,
@@ -24,31 +27,29 @@ const Navigation: React.FC<NavProps> = ({
   if (isSignedIn) {
     return (
       <nav>
-        <ProfileIcon onRouteChange={onRouteChange} toggleModal={toggleModal} />
+        <ProfileIcon handleSignOut={handleSignOut} toggleModal={toggleModal} />
       </nav>
     );
   } else {
     return (
       <nav className={`${StyleTheme.backgroundColor}`}>
-        <p
-          onClick={() => onRouteChange("signin")}
-          className={`f3 link dim pa3 pointer ${StyleTheme.links}`}
-        >
-          Sign In
-        </p>
-        <p
-          onClick={() => onRouteChange("register")}
-          className={`f3 link dim pa3 pointer ${StyleTheme.links}`}
-        >
-          Register
-        </p>
+        <Link to="signin">
+          <p className={`f3 link dim pa3 pointer ${StyleTheme.links}`}>
+            Sign In
+          </p>
+        </Link>
+        <Link to="register">
+          <p className={`f3 link dim pa3 pointer ${StyleTheme.links}`}>
+            Register
+          </p>
+        </Link>
       </nav>
     );
   }
 };
 
 Navigation.propTypes = {
-  onRouteChange: PropTypes.func.isRequired,
+  // onRouteChange: PropTypes.func.isRequired,
   isSignedIn: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
 };

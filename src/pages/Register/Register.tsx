@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 
 interface FormValues {
   email: string;
@@ -10,9 +11,9 @@ interface FormValues {
 
 const Register: React.FC<{
   fetchProfile(token: string, id: number | null): void;
-  onRouteChange(route: string): void;
+  // onRouteChange(route: string): void;
   stage: string;
-}> = ({ fetchProfile, onRouteChange, stage }) => {
+}> = ({ fetchProfile, stage }) => {
   useEffect(() => {
     const cancelCourse = () => {
       (document.getElementById("registerForm") as HTMLFormElement).reset();
@@ -21,6 +22,7 @@ const Register: React.FC<{
   }, []);
 
   const { register, handleSubmit } = useForm<FormValues>();
+  const navigate = useNavigate();
 
   const saveAuthTokenInSessions = (token: string): void => {
     window.sessionStorage.setItem("SmartBrainToken", token);
@@ -39,7 +41,8 @@ const Register: React.FC<{
             console.log("You're logged in.");
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
-            onRouteChange("home");
+            // onRouteChange("home");
+            navigate("home");
           }
         })
         .catch(console.error);
@@ -105,12 +108,9 @@ const Register: React.FC<{
             />
           </div>
           <div className="lh-copy mt3">
-            <p
-              onClick={() => onRouteChange("signin")}
-              className="f6 link dim db pointer"
-            >
+            <Link to={"signin"} className="f6 link dim db pointer">
               Sign in
-            </p>
+            </Link>
           </div>
         </form>
       </main>

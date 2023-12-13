@@ -18,10 +18,11 @@ import {
   RouterProvider,
   Routes,
   createBrowserRouter,
+  useNavigate,
 } from "react-router-dom";
 
 // ================================================================ is dev ? ===============================================
-const isDev = false;
+const isDev = true;
 var stageOfBuild = {
   // route: "44.204.229.83", aws ipv4
   back: "https://multitasker.alonfabio.com",
@@ -33,7 +34,7 @@ if (isDev) {
   stageOfBuild = {
     back: "http://localhost",
     startPoint: "signin",
-    isSignedIn: false,
+    isSignedIn: true,
     // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
   };
 }
@@ -41,11 +42,25 @@ if (isDev) {
 // ================================================================ is dev ? ===============================================
 
 // ============================================================== TypeScript ===============================================
+
+type TRoutes = "faceDetection" | "signin" | "register" | "home";
+
 interface IStyleTheme {
   color: string;
   backgroundColor?: string;
   links?: string;
 }
+
+interface IUser {
+  id: null | number;
+  name: string | "";
+  email: string | "";
+  entries: number;
+  joined: string | "";
+  age: string | "";
+  pet: string | "";
+}
+// ============================================================ TypeScript end ==============================================
 
 const particlesOptions = {
   //customize this to your liking
@@ -60,17 +75,6 @@ const particlesOptions = {
   },
 };
 
-interface IUser {
-  id: null | number;
-  name: string | "";
-  email: string | "";
-  entries: number;
-  joined: string | "";
-  age: string | "";
-  pet: string | "";
-}
-// ============================================================ TypeScript end ==============================================
-
 const App = () => {
   const [user, setUser] = useState<IUser>({
     id: null,
@@ -81,14 +85,14 @@ const App = () => {
     age: "",
     pet: "",
   });
-  const [route, setRoute] = useState<string>(() => {
-    const routePersis = window.sessionStorage.getItem("SmartBrainRoute");
-
-    if (routePersis) {
-      return routePersis;
-    }
-    return stageOfBuild.startPoint;
-  });
+  const navigate = useNavigate();
+  const routesNames: TRoutes[] = [
+    "faceDetection",
+    "signin",
+    "register",
+    "home",
+  ];
+  const [route, setRoute] = useState("");
   const [stage] = useState(stageOfBuild.back);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(stageOfBuild.isSignedIn);
@@ -115,7 +119,8 @@ const App = () => {
     setIsProfileOpen(false);
     setIsSignedIn(false);
     setLoading(false);
-    setRoute("signin");
+    navigate("signin");
+    // setRoute("signin");
   };
 
   const loadUser = (data: IUser): void => {
@@ -133,6 +138,11 @@ const App = () => {
     });
   };
 
+  const handleSignOut = () => {
+    window.sessionStorage.removeItem("SmartBrainToken");
+    window.sessionStorage.removeItem("SmartBrainRoute");
+    setInitialState();
+  };
   const onRouteChange = (route: string): void => {
     if (route === "signout") {
       window.sessionStorage.removeItem("SmartBrainToken");
@@ -167,22 +177,43 @@ const App = () => {
         .then((user) => {
           if (user.email) {
             loadUser(user);
-            const routePersis =
-              window.sessionStorage.getItem("SmartBrainRoute");
             setIsSignedIn(true);
-            if (routePersis && route !== "signin") {
-              onRouteChange(routePersis);
-            } else {
-              onRouteChange("home");
-            }
+            // const routePersis =
+            //   window.sessionStorage.getItem("SmartBrainRoute");
+            //   if (routePersis && route !== "signin") {
+            //     onRouteChange(routePersis);
+            // } else {
+            // onRouteChange("home");
+            navigate("home");
+            // }
           }
         })
         .catch((err) => console.error);
     }
   };
+  const isRoute = (route: string | null): boolean => {
+    if (typeof route !== "string") false;
+    return (
+      ["faceDetection", "signin", "register", "home"].find(
+        (routeName) => routeName === route
+      ) !== undefined
+    );
+  };
 
   useEffect(() => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
+
+    // const routePersis = window.sessionStorage.getItem("SmartBrainRoute");
+
+    // if (
+    //   routesNames.find((routeName) => routeName === routePersis) !==
+    //     undefined &&
+    //   routePersis !== null
+    // ) {
+    //   setRoute(routePersis);
+    // } else {
+    //   setRoute(stageOfBuild.startPoint);
+    // }
 
     if (token && (user.id === null || typeof user.id !== "number")) {
       isDev &&
@@ -221,12 +252,12 @@ const App = () => {
       <div className="App">
         <Navigation
           isSignedIn={isSignedIn}
-          onRouteChange={onRouteChange}
+          // onRouteChange={onRouteChange}
+          handleSignOut={handleSignOut}
           toggleModal={toggleModal}
           StyleTheme={StyleTheme}
         />
-        <Particles className="particles" params={particlesOptions} />
-        {/* <Modal
+        <Modal
           showModal={isProfileOpen}
           setShowModal={setIsProfileOpen}
           clickOutSide
@@ -237,140 +268,81 @@ const App = () => {
             user={user}
             stage={stage}
           />
-        </Modal> */}
+        </Modal>
         <Outlet />
+        <Particles className="particles" params={particlesOptions} />
       </div>
     );
   };
 
   // Split Navigation & components to singIn/notSignIng.
   // const router = createBrowserRouter([{}]);
-  // return (
-  //   <div className="App">
-  //     <Navigation
-  //       isSignedIn={isSignedIn}
-  //       onRouteChange={onRouteChange}
-  //       toggleModal={toggleModal}
-  //       StyleTheme={StyleTheme}
-  //     />
 
-  //     {route === "home" ? (
-  //       <Home
-  //         onRouteChange={onRouteChange}
-  //         faceDetectPic={faceDetectPic}
-  //         graphPic={graphPic}
-  //       />
-  //     ) : route === "faceDetection" ? (
-  //       <FaceDetection
-  //         user={user}
-  //         setUser={setUser}
-  //         stage={stageOfBuild.back}
-  //       />
-  //     ) : route === "signin" ? (
-  //       loading ? (
-  //         <h1 className="f1 fw6 ph0 mh0">Loading</h1>
-  //       ) : (
-  //         <Signin
-  //           onRouteChange={onRouteChange}
-  //           fetchProfile={fetchProfile}
-  //           stage={stage}
-  //         />
-  //       )
-  //     ) : (
-  //       <Register
-  //         fetchProfile={fetchProfile}
-  //         onRouteChange={onRouteChange}
-  //         stage={stage}
-  //       />
-  //     )}
-  //     <Particles className="particles" params={particlesOptions} />
-  //     <Modal
-  //       showModal={isProfileOpen}
-  //       setShowModal={setIsProfileOpen}
-  //       clickOutSide
-  //     >
-  //       <Profile
-  //         loadUser={loadUser}
-  //         toggleModal={toggleModal}
-  //         user={user}
-  //         stage={stage}
-  //       />
-  //     </Modal>
-  //   </div>
-  // );
   return (
     <Routes>
-      <Route path="*" element={<Layout />}>
-        <Route
-          path="*"
-          index
-          element={
-            <Signin
-              onRouteChange={onRouteChange}
-              fetchProfile={fetchProfile}
-              stage={stage}
-            />
-          }
-        />
-      </Route>
+      <Route path="*" element={<Layout />}></Route>
+      {isSignedIn ? (
+        <Route path="*" element={<Layout />}>
+          <Route
+            path="*"
+            index
+            element={
+              <Home
+                // onRouteChange={onRouteChange}
+                faceDetectPic={faceDetectPic}
+                graphPic={graphPic}
+              />
+            }
+          />
+          <Route
+            path="FaceDetection"
+            element={
+              <FaceDetection
+                user={user}
+                setUser={setUser}
+                stage={stageOfBuild.back}
+              />
+            }
+          />
+        </Route>
+      ) : (
+        <Route path="*" element={<Layout />}>
+          <Route
+            path="*"
+            index
+            element={
+              <Signin
+                // onRouteChange={onRouteChange}
+                fetchProfile={fetchProfile}
+                stage={stage}
+              />
+            }
+          />
 
-      <Route path="/auth" element={<Layout />}>
-        <Route
-          path="*"
-          index
-          element={
-            <Signin
-              onRouteChange={onRouteChange}
-              fetchProfile={fetchProfile}
-              stage={stage}
-            />
-          }
-        />
-        <Route
-          path="(signin|*)"
-          element={
-            <Signin
-              onRouteChange={onRouteChange}
-              fetchProfile={fetchProfile}
-              stage={stage}
-            />
-          }
-        />
-        <Route
-          path="register"
-          element={
-            <Register
-              fetchProfile={fetchProfile}
-              onRouteChange={onRouteChange}
-              stage={stage}
-            />
-          }
-        />
-      </Route>
+          <Route
+            path="signin"
+            index
+            element={
+              <Signin
+                // onRouteChange={onRouteChange}
+                fetchProfile={fetchProfile}
+                stage={stage}
+              />
+            }
+          />
 
-      <Route path="/in" element={<Layout />}>
-        <Route
-          path="*"
-          index
-          element={
-            <Home
-              onRouteChange={onRouteChange}
-              faceDetectPic={faceDetectPic}
-              graphPic={graphPic}
-            />
-          }
-        />
-        <Route
-          path="FaceDetection"
-          element={
-            <FaceDetection
-              user={user}
-              setUser={setUser}
-              stage={stageOfBuild.back}
-            />
-          }
-        />
-      </Route>
+          <Route
+            path="register"
+            element={
+              <Register
+                fetchProfile={fetchProfile}
+                // onRouteChange={onRouteChange}
+                stage={stage}
+              />
+            }
+          />
+        </Route>
+      )}
     </Routes>
   );
 };

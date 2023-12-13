@@ -3,14 +3,14 @@ import Logo from "../../components/Logo/Logo";
 
 // style
 import "./home.css";
+import { Link } from "react-router-dom";
 
 interface IHome {
-  onRouteChange: (route: string) => void;
   faceDetectPic: string;
   graphPic: string;
 }
 
-const Home: React.FC<IHome> = ({ faceDetectPic, onRouteChange, graphPic }) => {
+const Home: React.FC<IHome> = ({ faceDetectPic, graphPic }) => {
   return (
     <div id="Home" className="z-1 relative ">
       <div>
@@ -21,19 +21,11 @@ const Home: React.FC<IHome> = ({ faceDetectPic, onRouteChange, graphPic }) => {
         <h3>For now, please enjoy the face detection app</h3>
       </div>
       <div id="LogoComponent">
-        <Logo
-          image={faceDetectPic}
-          context={"Face Detection"}
-          onRouteChangeObj={{
-            onRouteChange: onRouteChange,
-            route: "faceDetection",
-          }}
-        />
-        <Logo
-          image={graphPic}
-          context={"coming soon.."}
-          onRouteChangeObj={{ onRouteChange: onRouteChange, route: "home" }}
-        />
+        <Link to="faceDetection">
+          <Logo image={faceDetectPic} context={"Face Detection"} />
+        </Link>
+
+        <Logo image={graphPic} context={"coming soon.."} />
       </div>
     </div>
   );
