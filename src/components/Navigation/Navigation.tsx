@@ -33,12 +33,12 @@ const Navigation: React.FC<NavProps> = ({
   } else {
     return (
       <nav className={`${StyleTheme.backgroundColor}`}>
-        <Link to="signin">
+        <Link to="/signin">
           <p className={`f3 link dim pa3 pointer ${StyleTheme.links}`}>
             Sign In
           </p>
         </Link>
-        <Link to="register">
+        <Link to="/register">
           <p className={`f3 link dim pa3 pointer ${StyleTheme.links}`}>
             Register
           </p>

@@ -6,10 +6,10 @@ import "./Logo.css";
 
 interface ILogoProps {
   image: string;
-  context: string;
+  title: string;
 }
 
-const Logo: React.FC<ILogoProps> = ({ image, context }) => {
+const Logo: React.FC<ILogoProps> = ({ image, title }) => {
   return (
     <div
       className="mt4 mb4 mt0 Logo"
@@ -17,7 +17,7 @@ const Logo: React.FC<ILogoProps> = ({ image, context }) => {
       //   onRouteChangeObj.onRouteChange(onRouteChangeObj.route)
       // }
     >
-      <h1>{context}</h1>
+      <h1>{title}</h1>
 
       <Tilt
         className="Tilt br4"

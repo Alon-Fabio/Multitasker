@@ -109,7 +109,7 @@ const Signin: React.FC<ISigProps> = ({
             </div>
           </div>
           <div className="lh-copy mt3">
-            <Link to="register">
+            <Link to="/register">
               <p className="f6 link dim db pointer">Register</p>
             </Link>
           </div>

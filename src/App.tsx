@@ -10,7 +10,7 @@ import Profile from "./components/Profile/Profile";
 import "./App.css";
 import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
-import Home from "./pages/Home/Home";
+import Apps from "./pages/Apps/Apps";
 import FaceDetection from "./pages/FaceDetection/FaceDetection";
 import {
   Outlet,
@@ -26,16 +26,16 @@ const isDev = true;
 var stageOfBuild = {
   // route: "44.204.229.83", aws ipv4
   back: "https://multitasker.alonfabio.com",
-  startPoint: "signin",
+
   isSignedIn: false,
 };
 
 if (isDev) {
   stageOfBuild = {
     back: "http://localhost",
-    startPoint: "signin",
-    isSignedIn: true,
-    // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "home" pick a mode (face detection/graph)
+
+    isSignedIn: false,
+    // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "apps" pick a mode (face detection/graph)
   };
 }
 // ================================================================ is dev ? ===============================================
@@ -43,7 +43,7 @@ if (isDev) {
 
 // ============================================================== TypeScript ===============================================
 
-type TRoutes = "faceDetection" | "signin" | "register" | "home";
+type TRoutes = "faceDetection" | "signin" | "register" | "apps";
 
 interface IStyleTheme {
   color: string;
@@ -90,7 +90,7 @@ const App = () => {
     "faceDetection",
     "signin",
     "register",
-    "home",
+    "apps",
   ];
   const [route, setRoute] = useState("");
   const [stage] = useState(stageOfBuild.back);
@@ -148,7 +148,7 @@ const App = () => {
   //     window.sessionStorage.removeItem("SmartBrainToken");
   //     window.sessionStorage.removeItem("SmartBrainRoute");
   //     setInitialState();
-  //   } else if (route === "home") {
+  //   } else if (route === "apps") {
   //     setIsSignedIn(() => true);
   //     window.sessionStorage.setItem("SmartBrainRoute", route);
   //   } else if (route === "faceDetection") {
@@ -183,8 +183,8 @@ const App = () => {
             //   if (routePersis && route !== "signin") {
             //     onRouteChange(routePersis);
             // } else {
-            // onRouteChange("home");
-            navigate("home");
+            // onRouteChange("apps");
+            navigate("/apps");
             // }
           }
         })
@@ -194,7 +194,7 @@ const App = () => {
   const isRoute = (route: string | null): boolean => {
     if (typeof route !== "string") false;
     return (
-      ["faceDetection", "signin", "register", "home"].find(
+      ["faceDetection", "signin", "register", "apps"].find(
         (routeName) => routeName === route
       ) !== undefined
     );
@@ -231,9 +231,9 @@ const App = () => {
           setLoading(() => false);
           if (data && data.id) {
             fetchProfile(token, Number(data.id));
-            navigate("home");
+            navigate("/apps");
           } else {
-            navigate("sigin");
+            navigate("/signin");
             setIsSignedIn(false);
           }
         })
@@ -287,7 +287,7 @@ const App = () => {
             path="*"
             index
             element={
-              <Home
+              <Apps
                 // onRouteChange={onRouteChange}
                 faceDetectPic={faceDetectPic}
                 graphPic={graphPic}

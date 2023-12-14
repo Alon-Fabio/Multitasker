@@ -43,6 +43,11 @@ nav {
   color: rgb(195, 223, 248);
 }
 
+a {
+  color: unset;
+  text-decoration: none;
+}
+
 @media screen and (max-width: 720px) {
   nav {
     justify-content: space-evenly;

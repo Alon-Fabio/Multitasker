@@ -2,15 +2,15 @@ import React from "react";
 import Logo from "../../components/Logo/Logo";
 
 // style
-import "./home.css";
+import "./apps.css";
 import { Link } from "react-router-dom";
 
-interface IHome {
+interface IApps {
   faceDetectPic: string;
   graphPic: string;
 }
 
-const Home: React.FC<IHome> = ({ faceDetectPic, graphPic }) => {
+const Apps: React.FC<IApps> = ({ faceDetectPic, graphPic }) => {
   return (
     <div id="Home" className="z-1 relative ">
       <div>
@@ -21,14 +21,15 @@ const Home: React.FC<IHome> = ({ faceDetectPic, graphPic }) => {
         <h3>For now, please enjoy the face detection app</h3>
       </div>
       <div id="LogoComponent">
-        <Link to="faceDetection">
-          <Logo image={faceDetectPic} context={"Face Detection"} />
+        <Link to="/faceDetection">
+          <Logo image={faceDetectPic} title={"Face Detection"} />
         </Link>
-
-        <Logo image={graphPic} context={"coming soon.."} />
+        <a>
+          <Logo image={graphPic} title={"coming soon.."} />
+        </a>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Apps;

@@ -42,7 +42,7 @@ const Register: React.FC<{
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
             // onRouteChange("home");
-            navigate("home");
+            navigate("/apps");
           }
         })
         .catch(console.error);
@@ -104,7 +104,7 @@ const Register: React.FC<{
             <input
               className="ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib input-register"
               type="submit"
-              value="Register"
+              value="Done"
             />
           </div>
           <div className="lh-copy mt3">

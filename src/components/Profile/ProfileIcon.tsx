@@ -6,6 +6,7 @@ import {
   DropdownToggle,
   DropdownItem,
 } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
 interface IProIcoProps {
   // onRouteChange(route: string): void;
@@ -19,6 +20,7 @@ const ProfileIcon: React.FC<IProIcoProps> = ({
   toggleModal,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
 
@@ -30,11 +32,6 @@ const ProfileIcon: React.FC<IProIcoProps> = ({
           data-toggle="dropdown"
           aria-expanded={dropdownOpen}
         >
-          {/* <img
-            src="http://tachyons.io/img/logo.jpg"
-            className="br-100 pa1 ba b--black-10 h3 w3"
-            alt="avatar"
-          /> */}
           <i className="fa-solid fa-user  pointer b--black-10"></i>
         </DropdownToggle>
         <DropdownMenu
@@ -46,6 +43,13 @@ const ProfileIcon: React.FC<IProIcoProps> = ({
           }}
         >
           <DropdownItem onClick={toggleModal}>Profile</DropdownItem>
+          <DropdownItem
+            onClick={() => {
+              navigate("/apps");
+            }}
+          >
+            Apps
+          </DropdownItem>
           <DropdownItem onClick={handleSignOut}>Sign Out</DropdownItem>
         </DropdownMenu>
       </Dropdown>

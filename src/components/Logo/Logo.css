@@ -23,6 +23,7 @@
   .Tilt {
     height: auto;
     width: 70vw;
+    margin: 0px auto;
   }
   .Logo {
     max-width: 100vw;
