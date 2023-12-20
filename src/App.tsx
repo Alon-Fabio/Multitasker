@@ -22,7 +22,7 @@ import {
 } from "react-router-dom";
 
 // ================================================================ is dev ? ===============================================
-const isDev = true;
+const isDev = false;
 var stageOfBuild = {
   // route: "44.204.229.83", aws ipv4
   back: "https://multitasker.alonfabio.com",
