@@ -3,17 +3,22 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
+// ============================================================== TypeScript ===============================================
+
 interface FormValues {
   email: string;
   password: string;
   name: string;
 }
 
-const Register: React.FC<{
+type TRegister = React.FC<{
   fetchProfile(token: string, id: number | null): void;
-  // onRouteChange(route: string): void;
   stage: string;
-}> = ({ fetchProfile, stage }) => {
+}>;
+
+// ============================================================== Component ===============================================
+
+const Register: TRegister = ({ fetchProfile, stage }) => {
   useEffect(() => {
     const cancelCourse = () => {
       (document.getElementById("registerForm") as HTMLFormElement).reset();
@@ -24,7 +29,7 @@ const Register: React.FC<{
   const { register, handleSubmit } = useForm<FormValues>();
   const navigate = useNavigate();
 
-  const saveAuthTokenInSessions = (token: string): void => {
+  const saveAuthTokenInSessions = (token: string) => {
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
   const onSubmitSignIn = (formData: FormValues) => {
@@ -38,11 +43,12 @@ const Register: React.FC<{
         .then((response) => response.json())
         .then((data) => {
           if (data.success === true) {
-            console.log("You're logged in.");
+            console.info("You're logged in.");
             fetchProfile(data.token, data.userId);
             saveAuthTokenInSessions(data.token);
-            // onRouteChange("home");
             navigate("/apps");
+          } else {
+            console.error("Failed to register.");
           }
         })
         .catch(console.error);

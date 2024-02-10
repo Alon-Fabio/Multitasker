@@ -4,13 +4,15 @@ import Logo from "../../components/Logo/Logo";
 // style
 import "./apps.css";
 import { Link } from "react-router-dom";
+// ============================================================== TypeScript ===============================================
 
-interface IApps {
+type TApps = React.FC<{
   faceDetectPic: string;
   graphPic: string;
-}
+}>;
+// ============================================================== Component ===============================================
 
-const Apps: React.FC<IApps> = ({ faceDetectPic, graphPic }) => {
+const Apps: TApps = ({ faceDetectPic, graphPic }) => {
   return (
     <div id="Home" className="z-1 relative ">
       <div>
@@ -21,7 +23,7 @@ const Apps: React.FC<IApps> = ({ faceDetectPic, graphPic }) => {
         <h3>For now, please enjoy the face detection app</h3>
       </div>
       <div id="LogoComponent">
-        <Link to="/faceDetection">
+        <Link to="faceDetection">
           <Logo image={faceDetectPic} title={"Face Detection"} />
         </Link>
         <a>

@@ -1,42 +1,34 @@
-import * as React from "react";
-import * as PropTypes from "prop-types";
+import React from "react";
+import PropTypes from "prop-types";
 import "./FaceRecognition.css";
+// ============================================================== TypeScript ===============================================
 
-interface IProps {
-  imageUrl: string;
-  boxes: {
-    leftCol: number;
-    topRow: number;
-    rightCol: number;
-    bottomRow: number;
-  }[];
-}
-interface IBoxMap {
+type IBoxMap = {
   topRow: number;
   leftCol: number;
   rightCol: number;
   bottomRow: number;
-}
+}[];
 
-const FaceRecognition: React.FC<{
+type TFaceRecognition = React.FC<{
   imageUrl: string;
-  boxes: any;
-  stage: string;
-  setLoaded: (b: boolean) => void;
-}> = ({ imageUrl, boxes, setLoaded }): JSX.Element => {
+  boxes: IBoxMap;
+}>;
+// ============================================================== Component ===============================================
+
+const FaceRecognition: TFaceRecognition = ({ imageUrl, boxes }) => {
   return (
     <div>
       <div className="center">
         <div className="pa2 relative block">
           <img
             className="br3"
-            onLoad={() => setLoaded(true)}
             id="inputimage"
             alt="Uploaded image"
             src={imageUrl}
             height={"max-content"}
           />
-          {boxes.map((box: IBoxMap, i: number): JSX.Element => {
+          {boxes.map((box: IBoxMap[0], i: number): JSX.Element => {
             return (
               <div
                 key={i}
@@ -66,7 +58,6 @@ FaceRecognition.propTypes = {
       bottomRow: PropTypes.number.isRequired,
     }).isRequired
   ).isRequired,
-  stage: PropTypes.string.isRequired,
 };
 
 export default FaceRecognition;

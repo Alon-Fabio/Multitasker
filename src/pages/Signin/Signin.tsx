@@ -1,27 +1,26 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-interface ISigProps {
+// ============================================================== TypeScript ===============================================
+
+type TSignin = React.FC<{
   fetchProfile(token: string, id: number | null): void;
   // onRouteChange(route: string): void;
   stage: string;
-}
+}>;
 
 interface ISgnRedState {
   email: string;
   password: string;
 }
+// ============================================================== Component ===============================================
 
-const Signin: React.FC<ISigProps> = ({
-  fetchProfile,
-  // onRouteChange,
-  stage,
-}) => {
+const Signin: TSignin = ({ fetchProfile, stage }) => {
   const [SigninErr, setSigninErr] = useState(false);
   const [password, setSigninPass] = useState("");
   const [email, setSigninEmail] = useState("");
-
+  const navigate = useNavigate();
   const saveAuthTokenInSessions = (token: string) => {
     window.sessionStorage.setItem("SmartBrainToken", token);
   };
@@ -42,6 +41,8 @@ const Signin: React.FC<ISigProps> = ({
           saveAuthTokenInSessions(data.token);
           fetchProfile(data.token, data.userId);
           setSigninErr(false);
+          navigate("/apps");
+          console.info("You're logged in.");
         }
         if (data === "signinAuthentication") {
           console.error("Wrong pass or mail");

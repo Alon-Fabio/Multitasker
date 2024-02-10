@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-const Rank: React.FC<{
+// ============================================================== TypeScript ===============================================
+
+type TRank = React.FC<{
   entries: string | undefined;
   name: string | undefined;
-}> = ({ entries, name }) => {
+}>;
+
+// ============================================================== Component ===============================================
+
+const Rank: TRank = ({ entries, name }) => {
   const [emoji, setEmoji] = useState("");
 
   useEffect(() => {
-    if (entries !== undefined) {
+    // 10 represents the number of emojis in AWS lambada.
+    if (entries !== undefined && Number(entries) < 10) {
       rankEmoji(entries);
     }
   }, [entries, name]);
 
-  const rankEmoji = (entries: string): void => {
+  const rankEmoji = (entries: string) => {
     fetch(
       `https://x12q8i6zkb.execute-api.us-east-1.amazonaws.com/dev/rank?rank=${entries}`,
       {

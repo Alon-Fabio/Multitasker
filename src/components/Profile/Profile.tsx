@@ -2,19 +2,26 @@ import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 import "./Profile.css";
 
-interface IProfileProps {
-  user: {
-    id?: null | number;
-    name: string;
-    email: string;
-    entries: number | null;
-    joined: string;
-    age?: string;
-    pet?: string;
-  };
-  toggleModal(): void;
-  loadUser(user: {}): void;
+// ============================================= Types =================================================
+type TProfile = React.FC<{
+  user: IUser;
+  profile: IProfile;
+  toggleModal: () => void;
+  loadUser: (user: IProfile & IUser) => void;
   stage: string;
+}>;
+
+interface IProfile {
+  entries: number;
+}
+
+interface IUser {
+  id: null | number;
+  email: string | "";
+  name: string | "";
+  joined: string | "";
+  age: string | "";
+  pet: string | "";
 }
 
 interface IProState {
@@ -28,13 +35,11 @@ interface IProAction {
   payload: string;
 }
 
-const Profile: React.FC<IProfileProps> = ({
-  user,
-  toggleModal,
-  loadUser,
-  stage,
-}) => {
-  const { id, name, age, pet } = user;
+// ============================================= Component =============================================
+const Profile: TProfile = ({ user, loadUser, toggleModal, profile, stage }) => {
+  const sessionEntries = window.sessionStorage.getItem("multiProfile");
+  const entries = sessionEntries || profile.entries;
+  const { name, age, pet } = user;
   const today = new Date();
   const isBirthday = today
     .toISOString()
@@ -48,7 +53,7 @@ const Profile: React.FC<IProfileProps> = ({
       case "NAME_CHANGE":
         if (action.payload.length > 1)
           return { ...ProState, name: action.payload };
-        return { ...ProState, name: user.name };
+        return { ...ProState, name: name };
       case "AGE_CHANGE":
         return { ...ProState, age: action.payload };
 
@@ -66,7 +71,7 @@ const Profile: React.FC<IProfileProps> = ({
   });
 
   const onProfileSave = (data: IProState) => {
-    fetch(`${stage}/profile/${id}`, {
+    fetch(`${stage}/profile/${user.id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -75,10 +80,10 @@ const Profile: React.FC<IProfileProps> = ({
       },
       body: JSON.stringify({ formInput: data }),
     })
-      .then((response: Response) => {
+      .then((response) => {
         if (response.status === 200 || response.status === 304) {
           toggleModal();
-          loadUser({ ...user, ...data });
+          loadUser({ ...profile, ...user, ...data });
         } else {
           alert("Something went wrong.. please try again later.");
         }
@@ -95,11 +100,11 @@ const Profile: React.FC<IProfileProps> = ({
           &times;
         </div>
         <main className="pa4  w-80">
-          <h1>{user.name || ProState.name || name}</h1>
-          <h4>{`Image submitted: ${user.entries?.toString()}`}</h4>
+          <h1>{name || ProState.name}</h1>
+          <h4>{`Image submitted: ${entries}`}</h4>
           <p>{`Member since: ${new Date(user.joined).toLocaleDateString()}`}</p>
-          <p>Date of birth: {user.age?.split(/-/).reverse().join("/")}</p>
-          <p>{user.age === isBirthday ? "Happy birthday!" : ""}</p>
+          <p>Date of birth: {age?.split(/-/).reverse().join("/")}</p>
+          <p>{age === isBirthday ? "Happy birthday!" : ""}</p>
           <hr />
 
           <label className="mt2 fw6" htmlFor="user-name">
@@ -107,7 +112,7 @@ const Profile: React.FC<IProfileProps> = ({
           </label>
           <input
             className="pa2 ba w-100"
-            placeholder={user.name}
+            placeholder={name}
             type="text"
             name="user-name"
             id="name"
@@ -179,11 +184,19 @@ const Profile: React.FC<IProfileProps> = ({
 Profile.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   loadUser: PropTypes.func.isRequired,
+
+  profile: PropTypes.shape({
+    entries: PropTypes.number.isRequired,
+  }).isRequired,
+  /*  A bug between TS & PropType:
+  "id: PropTypes.number !== id: number | null > id: PropTypes.number === id: number | null | undefined".
+  PropType has no definition fo 'null' but 'isRequired' but that will also set 'undefined'. 
+  */
+  // @ts-ignore
   user: PropTypes.shape({
     id: PropTypes.number,
+    email: PropTypes.string,
     name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    entries: PropTypes.number.isRequired,
     joined: PropTypes.string.isRequired,
     age: PropTypes.string.isRequired,
     pet: PropTypes.string.isRequired,

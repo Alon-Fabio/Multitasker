@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import "./ImageLinkForm.css";
+// ============================================================== TypeScript ===============================================
 
-interface IImageLinkFormProps {
+type TImageLinkFormProps = React.FC<{
   onInputChange(event: string): void;
-  onButtonSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
-}
+  onButtonSubmit(imageURL?: string): void;
+}>;
+// ============================================================== Component ===============================================
 
-const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
+const ImageLinkForm: TImageLinkFormProps = ({
   onInputChange,
   onButtonSubmit,
 }) => {
@@ -76,7 +78,6 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
         ref={dragZone}
         className={"hidden"}
       >
-        {/* <div className={"drag-drop-zone"}> */}
         <h1>Drag & drop files here to upload</h1>
       </div>
       <div className="pa3">
@@ -93,25 +94,23 @@ const ImageLinkForm: React.FC<IImageLinkFormProps> = ({
             className="f4 pa2 br3 w-100 center"
             type="tex"
             onChange={(event) => onInputChange(event.target.value)}
-            // value={ImageUrl !== "" && ImageUrl}
             placeholder={ImageUrl !== "" ? ImageUrl : "https//image.jpg/png"}
           />
         </div>
         <button
           className="grow ma3 br3 f4 link ph3 pv2 dib white"
-          onClick={onButtonSubmit}
+          onClick={() => onButtonSubmit()}
         >
           Detect
         </button>
       </div>
-      {/* <div className="relative"> */}
+
       <div
         onDragEnter={(event) => handleDragEnterOrOver(event)}
         onDragOver={(event) => handleDragEnterOrOver(event)}
         onDragLeave={(event) => handleDragLeave(event)}
         className="drag_detect"
       ></div>
-      {/* </div> */}
     </div>
   );
 };

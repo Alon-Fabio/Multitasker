@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo, useMemo } from "react";
 import Particles from "react-particles-js";
 
 import Navigation from "./components/Navigation/Navigation";
@@ -12,14 +12,7 @@ import faceDetectPic from "./Style/images/face-detection.png";
 import graphPic from "./Style/images/graph.png";
 import Apps from "./pages/Apps/Apps";
 import FaceDetection from "./pages/FaceDetection/FaceDetection";
-import {
-  Outlet,
-  Route,
-  RouterProvider,
-  Routes,
-  createBrowserRouter,
-  useNavigate,
-} from "react-router-dom";
+import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
 // ================================================================ is dev ? ===============================================
 const isDev = false;
@@ -39,11 +32,8 @@ if (isDev) {
   };
 }
 // ================================================================ is dev ? ===============================================
-// ================================================================ is dev ? ===============================================
 
 // ============================================================== TypeScript ===============================================
-
-type TRoutes = "faceDetection" | "signin" | "register" | "apps";
 
 interface IStyleTheme {
   color: string;
@@ -53,12 +43,15 @@ interface IStyleTheme {
 
 interface IUser {
   id: null | number;
-  name: string | "";
   email: string | "";
-  entries: number;
+  name: string | "";
   joined: string | "";
   age: string | "";
   pet: string | "";
+}
+
+interface IProfile {
+  entries: number;
 }
 // ============================================================ TypeScript end ==============================================
 
@@ -76,23 +69,33 @@ const particlesOptions = {
 };
 
 const App = () => {
-  const [user, setUser] = useState<IUser>({
+  const [userProfile, setUserProfile] = useState<IUser>({
     id: null,
-    name: "",
     email: "",
-    entries: 0,
+    name: "",
     joined: "",
     age: "",
     pet: "",
   });
+  const [appProfile, setAppProfile] = useState<IProfile>({
+    entries: 0,
+  });
+
   const navigate = useNavigate();
-  const routesNames: TRoutes[] = [
-    "faceDetection",
-    "signin",
-    "register",
-    "apps",
-  ];
-  const [route, setRoute] = useState("");
+
+  // ====================================================================================================== remove ============================================================================
+  // const [user, setUser] = useState<IUser>({
+  //   id: null,
+  //   name: "",
+  //   email: "",
+  //   entries: 0,
+  //   joined: "",
+  //   age: "",
+  //   pet: "",
+  // });
+
+  // ====================================================================================================== remove ============================================================================
+
   const [stage] = useState(stageOfBuild.back);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(stageOfBuild.isSignedIn);
@@ -104,16 +107,21 @@ const App = () => {
   });
 
   const setInitialState = () => {
-    setUser((prevState) => {
+    setUserProfile((prevState) => {
       return {
         ...prevState,
         id: null,
         name: "",
         email: "",
-        entries: 0,
         joined: "",
         age: "",
         pet: "",
+      };
+    });
+    setAppProfile((prevState) => {
+      return {
+        ...prevState,
+        entries: 0,
       };
     });
     setIsProfileOpen(false);
@@ -123,19 +131,25 @@ const App = () => {
     // setRoute("signin");
   };
 
-  const loadUser = (data: IUser): void => {
-    setUser((prevState: IUser): IUser => {
+  const loadUser = (data: IUser & IProfile): void => {
+    setUserProfile((prevState: IUser): IUser => {
       return {
         ...prevState,
+        email: data.email,
         id: data.id,
         name: data.name,
         age: data.age || "immortal? 🤯",
         pet: data.pet || "",
-        email: data.email,
-        entries: Number(data.entries),
         joined: data.joined,
       };
     });
+    setAppProfile((prvState) => {
+      return {
+        ...prvState,
+        entries: Number(data.entries),
+      };
+    });
+    window.sessionStorage.setItem("multiProfile", `${data.entries}`);
   };
 
   const handleSignOut = () => {
@@ -143,26 +157,6 @@ const App = () => {
     window.sessionStorage.removeItem("SmartBrainRoute");
     setInitialState();
   };
-  // const onRouteChange = (route: string): void => {
-  //   if (route === "signout") {
-  //     window.sessionStorage.removeItem("SmartBrainToken");
-  //     window.sessionStorage.removeItem("SmartBrainRoute");
-  //     setInitialState();
-  //   } else if (route === "apps") {
-  //     setIsSignedIn(() => true);
-  //     window.sessionStorage.setItem("SmartBrainRoute", route);
-  //   } else if (route === "faceDetection") {
-  //     setRoute("faceDetection");
-  //     window.sessionStorage.setItem("SmartBrainRoute", route);
-  //   } else if (route === "signin") {
-  //     setRoute("signin");
-
-  //     window.sessionStorage.setItem("SmartBrainRoute", route);
-  //   }
-  //   window.sessionStorage.setItem("SmartBrainRoute", route);
-
-  //   setRoute(() => route);
-  // };
 
   const fetchProfile = (token: string, id: number | null): void => {
     if (id !== null && id !== undefined) {
@@ -178,46 +172,25 @@ const App = () => {
           if (user.email) {
             loadUser(user);
             setIsSignedIn(true);
-            // const routePersis =
-            //   window.sessionStorage.getItem("SmartBrainRoute");
-            //   if (routePersis && route !== "signin") {
-            //     onRouteChange(routePersis);
-            // } else {
-            // onRouteChange("apps");
-            navigate("/apps");
-            // }
           }
         })
         .catch((err) => console.error);
     }
   };
-  const isRoute = (route: string | null): boolean => {
-    if (typeof route !== "string") false;
-    return (
-      ["faceDetection", "signin", "register", "apps"].find(
-        (routeName) => routeName === route
-      ) !== undefined
-    );
-  };
 
   useEffect(() => {
     const token = window.sessionStorage.getItem("SmartBrainToken");
 
-    // const routePersis = window.sessionStorage.getItem("SmartBrainRoute");
-
-    // if (
-    //   routesNames.find((routeName) => routeName === routePersis) !==
-    //     undefined &&
-    //   routePersis !== null
-    // ) {
-    //   setRoute(routePersis);
-    // } else {
-    //   setRoute(stageOfBuild.startPoint);
-    // }
-
-    if (token && (user.id === null || typeof user.id !== "number")) {
+    if (
+      token &&
+      (userProfile.id === null || typeof userProfile.id !== "number")
+    ) {
       isDev &&
-        console.log("App, useEffect: Type of id", user.id, typeof user.id);
+        console.info(
+          "App, useEffect: Type of id",
+          userProfile.id,
+          typeof userProfile.id
+        );
       setLoading(() => true);
       fetch(`${stage}/signin`, {
         method: "post",
@@ -230,8 +203,11 @@ const App = () => {
         .then((data) => {
           setLoading(() => false);
           if (data && data.id) {
+            // ====================================================================================================== fetchProfile is navigating to rout apps, no need to do it twice ============================================================================
             fetchProfile(token, Number(data.id));
-            navigate("/apps");
+
+            // navigate("/apps");
+            // ====================================================================================================== fetchProfile is navigating to rout apps, no need to do it twice ============================================================================
           } else {
             navigate("/signin");
             setIsSignedIn(false);
@@ -241,13 +217,19 @@ const App = () => {
     } else {
       setLoading(() => false);
     }
-  }, [user.id]);
+  }, [userProfile.id]);
 
   const toggleModal = (): void => {
     setIsProfileOpen((prevState) => !prevState);
   };
 
-  const Layout = () => {
+  const updateEntries = (entries: number) => {
+    setAppProfile((prvState) => {
+      return { ...prvState, entries };
+    });
+  };
+
+  const LayoutLoggedIn = () => {
     return (
       <div className="App">
         <Navigation
@@ -264,8 +246,9 @@ const App = () => {
         >
           <Profile
             loadUser={loadUser}
+            user={userProfile}
             toggleModal={toggleModal}
-            user={user}
+            profile={appProfile}
             stage={stage}
           />
         </Modal>
@@ -275,38 +258,55 @@ const App = () => {
     );
   };
 
+  const LayoutLoggedOut = () => {
+    return (
+      <div className="App">
+        <Navigation
+          isSignedIn={isSignedIn}
+          // onRouteChange={onRouteChange}
+          handleSignOut={handleSignOut}
+          toggleModal={toggleModal}
+          StyleTheme={StyleTheme}
+        />
+        <Outlet />
+        <Particles className="particles" params={particlesOptions} />
+      </div>
+    );
+  };
   // Split Navigation & components to singIn/notSignIng.
-  // const router = createBrowserRouter([{}]);
 
   return (
     <Routes>
-      <Route path="*" element={<Layout />}></Route>
+      <Route path="*" element={<LayoutLoggedOut />}></Route>
       {isSignedIn ? (
-        <Route path="*" element={<Layout />}>
-          <Route
-            path="*"
-            index
-            element={
-              <Apps
-                // onRouteChange={onRouteChange}
-                faceDetectPic={faceDetectPic}
-                graphPic={graphPic}
-              />
-            }
-          />
-          <Route
-            path="FaceDetection"
-            element={
-              <FaceDetection
-                user={user}
-                setUser={setUser}
-                stage={stageOfBuild.back}
-              />
-            }
-          />
+        <Route path="*" element={<LayoutLoggedIn />}>
+          <Route path="apps">
+            <Route
+              path="*"
+              index
+              element={
+                <Apps
+                  // onRouteChange={onRouteChange}
+                  faceDetectPic={faceDetectPic}
+                  graphPic={graphPic}
+                />
+              }
+            />
+            <Route
+              path="faceDetection"
+              element={
+                <FaceDetection
+                  userId={userProfile.id}
+                  name={userProfile.name}
+                  entries={appProfile.entries}
+                  stage={stageOfBuild.back}
+                />
+              }
+            />
+          </Route>
         </Route>
       ) : (
-        <Route path="*" element={<Layout />}>
+        <Route path="*" element={<LayoutLoggedOut />}>
           <Route
             path="*"
             index
