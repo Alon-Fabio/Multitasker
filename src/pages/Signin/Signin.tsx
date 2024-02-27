@@ -30,22 +30,25 @@ const Signin: TSignin = ({ fetchProfile, stage }) => {
     state?: ISgnRedState
   ) => {
     event.preventDefault();
-    fetch(`${stage}/signin`, {
+    fetch(`${stage}/api/signin`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(state ? state : { email, password }),
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data === "signinAuthentication") {
+          console.error("Wrong pass or mail");
+          setSigninErr(true);
+        }
         if (data.userId && data.success === true) {
           saveAuthTokenInSessions(data.token);
           fetchProfile(data.token, data.userId);
           setSigninErr(false);
           navigate("/apps");
           console.info("You're logged in.");
-        }
-        if (data === "signinAuthentication") {
-          console.error("Wrong pass or mail");
+        } else {
+          console.error("Sorry.. something went wrong.");
           setSigninErr(true);
         }
       })

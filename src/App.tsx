@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Particles from "react-particles-js";
 
 import Navigation from "./components/Navigation/Navigation";
@@ -15,23 +15,23 @@ import FaceDetection from "./pages/FaceDetection/FaceDetection";
 import { Outlet, Route, Routes, useNavigate } from "react-router-dom";
 
 // ================================================================ is dev ? ===============================================
-const isDev = false;
+
+const environment = process.env.NODE_ENV;
+
 var stageOfBuild = {
-  // route: "44.204.229.83", aws ipv4
   back: "https://multitasker.alonfabio.com",
 
   isSignedIn: false,
 };
 
-if (isDev) {
+if (environment === "development") {
+  console.log("You're in ", environment, " mode.");
   stageOfBuild = {
     back: "http://localhost",
 
     isSignedIn: false,
-    // Options: "faceDetection" the face detection section, "signin" sign in page, "signout" sign in page, "apps" pick a mode (face detection/graph)
   };
 }
-// ================================================================ is dev ? ===============================================
 
 // ============================================================== TypeScript ===============================================
 
@@ -83,22 +83,9 @@ const App = () => {
 
   const navigate = useNavigate();
 
-  // ====================================================================================================== remove ============================================================================
-  // const [user, setUser] = useState<IUser>({
-  //   id: null,
-  //   name: "",
-  //   email: "",
-  //   entries: 0,
-  //   joined: "",
-  //   age: "",
-  //   pet: "",
-  // });
-
-  // ====================================================================================================== remove ============================================================================
-
   const [stage] = useState(stageOfBuild.back);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(stageOfBuild.isSignedIn);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [StyleTheme] = useState<IStyleTheme>({
     color: "light-blue",
@@ -128,7 +115,6 @@ const App = () => {
     setIsSignedIn(false);
     setLoading(false);
     navigate("signin");
-    // setRoute("signin");
   };
 
   const loadUser = (data: IUser & IProfile): void => {
@@ -158,9 +144,9 @@ const App = () => {
     setInitialState();
   };
 
-  const fetchProfile = (token: string, id: number | null): void => {
+  const fetchProfile = (token: string, id: number): void => {
     if (id !== null && id !== undefined) {
-      fetch(`${stage}/profile/${id.toString()}`, {
+      fetch(`${stage}/api/profile/${id.toString()}`, {
         method: "get",
         headers: {
           "Content-Type": "application/json",
@@ -185,15 +171,9 @@ const App = () => {
       token &&
       (userProfile.id === null || typeof userProfile.id !== "number")
     ) {
-      isDev &&
-        console.info(
-          "App, useEffect: Type of id",
-          userProfile.id,
-          typeof userProfile.id
-        );
       setLoading(() => true);
-      fetch(`${stage}/signin`, {
-        method: "post",
+      fetch(`${stage}/api/signin`, {
+        method: "get",
         headers: {
           "Content-Type": "application/json",
           Authentication: token,
@@ -203,11 +183,11 @@ const App = () => {
         .then((data) => {
           setLoading(() => false);
           if (data && data.id) {
-            // ====================================================================================================== fetchProfile is navigating to rout apps, no need to do it twice ============================================================================
             fetchProfile(token, Number(data.id));
 
-            // navigate("/apps");
-            // ====================================================================================================== fetchProfile is navigating to rout apps, no need to do it twice ============================================================================
+            if (window.location.pathname !== "/apps/faceDetection") {
+              navigate("/apps");
+            }
           } else {
             navigate("/signin");
             setIsSignedIn(false);
@@ -221,12 +201,6 @@ const App = () => {
 
   const toggleModal = (): void => {
     setIsProfileOpen((prevState) => !prevState);
-  };
-
-  const updateEntries = (entries: number) => {
-    setAppProfile((prvState) => {
-      return { ...prvState, entries };
-    });
   };
 
   const LayoutLoggedIn = () => {

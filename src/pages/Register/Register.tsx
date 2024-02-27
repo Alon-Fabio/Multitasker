@@ -35,7 +35,7 @@ const Register: TRegister = ({ fetchProfile, stage }) => {
   const onSubmitSignIn = (formData: FormValues) => {
     // Enter validation here
     if (formData.password !== "" && formData.email !== "") {
-      fetch(`${stage}/register`, {
+      fetch(`${stage}/api/register`, {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

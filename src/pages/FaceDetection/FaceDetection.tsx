@@ -149,7 +149,7 @@ const FaceDetection: IFaceDetection = ({ name, entries, userId, stage }) => {
         }
       }, 10000);
 
-      fetch(`${stage}/imageurl`, {
+      fetch(`${stage}/api/imageurl`, {
         method: "post",
         headers: headers,
         signal: controller.signal,
@@ -170,7 +170,7 @@ const FaceDetection: IFaceDetection = ({ name, entries, userId, stage }) => {
             response.success == true
           ) {
             // Update user entries.
-            fetch(`${stage}/image`, {
+            fetch(`${stage}/api/image`, {
               method: "put",
               headers: headers,
               body: JSON.stringify({

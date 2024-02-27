@@ -71,7 +71,7 @@ const Profile: TProfile = ({ user, loadUser, toggleModal, profile, stage }) => {
   });
 
   const onProfileSave = (data: IProState) => {
-    fetch(`${stage}/profile/${user.id}`, {
+    fetch(`${stage}/api/profile/${user.id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
